@@ -1,3 +1,6 @@
-flagged/   # gradio cache
-llama/     # llama git repository
+# gradio cache
+flagged/
+# llama git repository
+llama/     
+# vim
 *.swp
