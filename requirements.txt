@@ -1,0 +1,7 @@
+# llama/requirements.txt (via install.sh)
+
+# https://huggingface.co/docs/autotrain/index
+autotrain-advanced
+
+# https://www.gradio.app/guides/quickstart
+gradio
