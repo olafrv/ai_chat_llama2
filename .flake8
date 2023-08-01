@@ -1,0 +1,6 @@
+[flake8]
+# https://www.flake8rules.com/rules/F403.html
+# https://www.flake8rules.com/rules/F405.html
+# https://www.flake8rules.com/rules/E501.html
+# https://www.flake8rules.com/rules/E722.html
+# extend-ignore=F403,F405,E501,E722
