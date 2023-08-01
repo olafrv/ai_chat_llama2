@@ -1,0 +1,3 @@
+flagged/   # gradio cache
+llama/     # llama git repository
+*.swp
