@@ -4,7 +4,6 @@
 # https://huggingface.co/docs/autotrain/index
 
 git clone https://github.com/facebookresearch/llama.git
-rm -rf llama/.git
 
 # Use Llama v2 Download URL from authorization e-mail requested at:
 # https://ai.meta.com/resources/models-and-libraries/llama-downloads/
