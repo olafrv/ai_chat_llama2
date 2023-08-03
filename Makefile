@@ -20,24 +20,27 @@ install: install.venv
 	@ . venv/bin/activate \
 		&& pip3 install -Ur requirements.txt
 
+# customize!
 install.dev: install.venv
-	@ . venv/bin/activate \
-		&& pip3 install -Ur requirements-dev.txt \
-		&& sudo apt install -y patchelf ccache
+	@ true \
+		&& sudo apt install -y patchelf ccache \
+		&& . venv/bin/activate \
+		&& pip3 install -Ur requirements-dev.txt
 
+# customize!
 install.venv: install.base
-	@ test -d venv \
-		|| python3 -m venv venv \
+	@ true \
+		&& sudo apt install -y zlib1g-dev libjpeg-dev libpq-dev \
+		&& test -d venv || python3 -m venv venv \
 		&& pip3 install -Ur requirements.txt \
-    	&& pip3 install --upgrade pip \
-		&& python3 -c "from ${NAME} import NeuralNet; NeuralNet('ssd_512_resnet50_v1_voc', True)" \
-		&& python3 -c "from ${NAME} import NeuralNet; NeuralNet('ssd_512_mobilenet1.0_voc', True)"
+    	&& pip3 install --upgrade pip
 
 install.base:
-	@ sudo apt install -y python3 \
-    	&& sudo apt install -y python3.10-venv\
+	@ sudo apt update \
+		&& sudo apt install -y python3 \
+    	&& sudo apt install -y python3.10-venv python3-dev python3-setuptools \
     	&& sudo apt install -y --no-install-recommends build-essential gcc \
-    	&& sudo apt install -y python3-pip python3-tk python3-pil.imagetk ffmpeg \
+    	&& sudo apt install -y python3-pip \
 		&& sudo apt clean
 
 uninstall: uninstall.venv clean
@@ -50,9 +53,11 @@ uninstall.venv:
 	#	&& pip3 uninstall --yes -r requirements-dev.txt
 	rm -rf venv
 
+# customize!
 clean:
 	@ rm -rf build logs
 
+# customize!
 check-config:
 	@ . venv/bin/activate \
 		&& python3 main.py --check-config
@@ -63,42 +68,45 @@ build: install.dev
 	# python3 -m nuitka --standalone --onefile --enable-plugin=numpy -o ${NAME}.bin main.py
 	@ . venv/bin/activate \
 		&& python3 -m nuitka --include-package=${NAME} --output-dir=./build \
-			--show-progress --report=./build/main.xml -j6 \
+			--show-progress --report=./build/main.py.xml -j6 \
 			main.py
-	@ chmod +x build/main.bin
+	@ chmod +x build/main.py.bin
 
+# customize!
 run:
 	@ mkdir -p logs \
 		&& . venv/bin/activate \
 		&& python3 main.py
 
 run.bin:
-	@ ./build/main.bin
+	@ ./build/main.py.bin
 
 test:
 	# https://docs.pytest.org/
 	@ . venv/bin/activate \
 		&& pytest -s -s --disable-warnings ${NAME}/tests/
 
+# customize!
 test.coverage:
 	# https://coverage.readthedocs.io
 	@ . venv/bin/activate \
 		&& coverage run main.py \
-		&& coverage report --show-missing ${NAME}/*.py ${NAME}/channels/*.py
+		&& coverage report --show-missing ${NAME}/*.py
 
+# customize!
 test.coverage.report:
 	@ . venv/bin/activate \
 		&& coverage run -m pytest -s --disable-warnings ${NAME}/tests/ \
-		&& coverage report --show-missing ${NAME}/*.py ${NAME}/channels/*.py
+		&& coverage report --show-missing ${NAME}/*.py
 
 profile: install.dev
 	# https://docs.python.org/3/library/profile.html
 	@ mkdir -p profile \
 		&& . venv/bin/activate \
-		&& python3 -m cProfile -o profile/main.prof main.py
+		&& python3 -m cProfile -o profile/main.py.prof main.py
 
 profile.view: install.dev
-	@ . venv/bin/activate && snakeviz profile/main.prof
+	@ . venv/bin/activate && snakeviz profile/main.py.prof
 
 docker.build:
 	@ docker build -t ${IMAGE_NAME}:${VERSION} .
@@ -107,12 +115,14 @@ docker.build:
 docker.clean:
 	@ docker images | grep ${IMAGE_NAME} | awk '{print $$1":"$$2}' | sort | xargs --no-run-if-empty -n1 docker image rm
 
+# customize!
 docker.run:
 	@ docker run --rm --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \
     	-v "${PWD}/logs:${IMAGE_APP_DIR}/logs" \
 		${IMAGE_NAME}:${VERSION}
 
+# customize!
 docker.exec:
 	@ docker run --rm -it --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \

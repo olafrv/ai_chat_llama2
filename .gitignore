@@ -1,6 +1,9 @@
-# gradio cache
-flagged/
-# llama git repository
-llama/     
+# hugging face downloads
+models
+# python
+venv
+__pycache__
 # vim
 *.swp
+# logs
+logs
