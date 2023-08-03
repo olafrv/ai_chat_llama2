@@ -1,11 +1,17 @@
 # AI Chat using LLAMA v2 LLM Model
 
+# Running
+
 * Clone the LLAMA v2 repository:
 
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
+make install
+make run
 ```
+
+# Training (Draft)
 
 * Register at https://huggingface.co to use AutoTrain Advanced:
 https://huggingface.co/docs/autotrain/index
