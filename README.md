@@ -1,4 +1,4 @@
-# AI Chat using LLAMA v2 LLM Model
+# AI Chat Llama2
 
 ChatBot using Meta AI Llama v2 LLM model.
 
