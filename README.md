@@ -14,6 +14,7 @@ cd ai_chat_llama
 # If you face an error with llama-cpp-python see requirements.txt
 make install
 make run
+# The LLM models will be downloaded, estimated size ~15 GiB
 # Now open your browser at 127.0.0.1:7860 to access the GRadio Web App
 ```
 
