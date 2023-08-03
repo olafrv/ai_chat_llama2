@@ -11,6 +11,7 @@ ChatBot using Meta AI Llama v2 LLM model.
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
+# If you face an error with llama-cpp-python see requirements.txt
 make install
 make run
 ```
@@ -21,8 +22,7 @@ make run
 https://huggingface.co/docs/autotrain/index
 
 * Now install python environment and setup autotrain:
-```
-# If you face an error with llama-cpp-python see requirements.txt
+```bash
 make install
 autotrain setup
 ```
