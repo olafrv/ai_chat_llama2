@@ -1,5 +1,9 @@
 # AI Chat using LLAMA v2 LLM Model
 
+ChatBot using Meta AI Llama v2 LLM model.
+
+<a href="ai_chat_llama2.png"><img src="ai_chat_llama2.png"></a> 
+
 ## ChatBot Running
 
 > Only working for GGML model (hardcoded), I need time to test others.
