@@ -2,8 +2,6 @@
 
 ## Running
 
-* Clone the LLAMA v2 repository:
-
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
