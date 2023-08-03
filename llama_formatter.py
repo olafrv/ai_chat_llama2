@@ -37,7 +37,7 @@ class llama_formatter:
             text = self.prompts[self.prompts_index]["text"]
 
             if author == "sysdef":
-                # Tokenizer adds BOS at encoding, so BOS not added here
+                # Tokenizer adds BOS at encoding, so BOS not added here?
                 self.prompts_output += \
                     f"{self.B_SYS}{text}{self.E_SYS}{self.EOS}"
             elif author == "user":
