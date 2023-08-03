@@ -1,6 +1,6 @@
 # AI Chat Llama2
 
-ChatBot using Meta AI Llama v2 LLM model.
+ChatBot using Meta AI Llama v2 LLM model on your local PC.
 
 <a href="ai_chat_llama2.png"><img src="ai_chat_llama2.png"></a> 
 
