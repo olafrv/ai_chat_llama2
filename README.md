@@ -1,6 +1,8 @@
 # AI Chat using LLAMA v2 LLM Model
 
-## Running
+## ChatBot Running
+
+> Only working for GGML model (hardcoded), I need time to test others.
 
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
@@ -9,7 +11,7 @@ make install
 make run
 ```
 
-## Training (Draft)
+## Model Training (Draft)
 
 * Register at https://huggingface.co to use AutoTrain Advanced:
 https://huggingface.co/docs/autotrain/index
@@ -41,16 +43,18 @@ autotrain llm --train \
 
 ## References
 
-* Llama v2 model code examples: 
-  * https://github.com/facebookresearch/llama.git
-* Llama v2 pre-trained model download (e-mail with signed link):
-  * https://ai.meta.com/resources/models-and-libraries/llama-downloads/
-* Llama v2 pre-trained models Hugging Face: 
-  * For GPUs: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
-  * GPTQ Quantized: https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ
-  * GGML Quantized: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
-* HuggingFace CLI:
+* Meta AI Llama v2 LLM Model:
+  * Llama v2 model code examples: 
+    * https://github.com/facebookresearch/llama.git
+  * Llama v2 pre-trained model download (e-mail with signed link):
+    * https://ai.meta.com/resources/models-and-libraries/llama-downloads/
+  * Llama v2 pre-trained models on Hugging Face: 
+    * For GPUs: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
+    * GPTQ Quantized: https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ
+    * GGML Quantized: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
+* HuggingFace:
   * https://huggingface.co
   * https://huggingface.co/docs/huggingface_hub/quick-start
   * https://huggingface.co/docs/autotrain/index
 * GRadio: https://www.gradio.app/guides/quickstart
+* Tricky references in the [main.py](main.py) source code.
