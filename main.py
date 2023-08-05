@@ -86,7 +86,7 @@ def ui(model_metadata: dict, model: Llama, tokenizer):
         clear = gradio.Button("Clear")
 
         formatter = llama_formatter()
-        
+
         def user(user_message, history):
             return "", history + [[user_message, None]]
 
