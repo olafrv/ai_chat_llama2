@@ -1,13 +1,18 @@
-# Basic dependencies
-transformers
-huggingface_hub
-gradio
+# See req-freeze-*.txt for the exact versions I use
 
-# llama-cpp-python, installed 'make install' in the root folder
+transformers==4.31.0
+huggingface-hub==0.16.4
+gradio==3.39.0
 
-# Only needed for GPTQ models
-# auto-gptq and must be installed manually see README.md
+# llama-cpp-python==0.1.77, installed 'make install' in the root folder
+# https://github.com/oobabooga/text-generation-webui/issues/1534
+
+# auto-gptq-0.3.2+cu117, installed following the README.md NVIDIA section
+# auto-gptq @ file:///home/ubuntu/code/ai_chat_llama2/AutoGPTQ
+
+# The version pinning is because of google-auth requirement conflict
+# https://stackoverflow.com/questions/68875228/the-conflict-is-caused-by-the-user-requested-urllib3-1-26-requests-2-23-0-depe
 urllib3==1.26.16
 
-# Only needed for Huggingface Autrotrain
-autotrain-advanced
+# Only needed for Huggingface Autrotrain to train models
+autotrain-advanced==0.6.15

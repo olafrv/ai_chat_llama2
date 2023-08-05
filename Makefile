@@ -43,9 +43,10 @@ install.venv: install.base
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
     	&& pip3 install --upgrade pip \
 		&& pip3 install -Ur requirements.txt \
-		&& echo "https://github.com/oobabooga/text-generation-webui/issues/1534" \ 
-		&& CMAKE_ARGS="-DLLAMA_CUBLAS=on" NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \ 
-		   FORCE_CMAKE=1 CXX=g++-11  CC=gcc-11 pip install llama-cpp-python --no-cache-dir
+		&& CMAKE_ARGS='-DLLAMA_CUBLAS=on' NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \
+			FORCE_CMAKE=1 CXX=g++-11 CC=gcc-11 pip install llama-cpp-python --no-cache-dir \
+		&& test -d AutoGPTQ || git clone https://github.com/PanQiWei/AutoGPTQ.git \
+		&& cd AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
 
 install.base:
 	@ sudo apt update \
