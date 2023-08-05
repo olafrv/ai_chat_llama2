@@ -11,11 +11,14 @@ ChatBot using Meta AI Llama v2 LLM model on your local PC.
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
-# If you face an error with llama-cpp-python see requirements.txt
+sudo apt install make
+# For llama-cpp-python errors on make, see requirements.txt
 make install
-make run
-# The LLM models will be downloaded, estimated size ~15 GiB
-# Now open your browser at 127.0.0.1:7860 to access the GRadio Web App
+# Llama v2 models will be downloaded (~15 GiB)
+export AI_LLAMA2_CHAT_STORE=./models 
+# export PYTHON_VENV_DIR=~/venv/ai_chat_llama2
+AI_LLAMA2_CHAT_MODEL=0 make run   
+# Navigate in your browser at 127.0.0.1:7860
 ```
 
 ## Model Training (Draft)
@@ -47,6 +50,26 @@ autotrain llm --train \
 --trainer sft
 ```
 
+# NVIDIA
+
+```bash
+# Bare metal Linux or WSL2 on Windows
+nvidia-smi
+sudo apt-get install -y nvidia-docker2
+sudo docker run --gpus all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
+# https://developer.nvidia.com/cuda-downloads (Linux > deb(network))
+wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cuda
+git clone https://github.com/nvidia/cuda-samples
+cd cuda-samples/Samples/1_Utilities/deviceQuery
+make
+./deviceQuery
+# Device 0: "NVIDIA GeForce RTX 3070 Ti Laptop GPU" ...
+# CUDA Driver Version / Runtime Version          12.2 / 12.2
+```
+
 ## References
 
 * Meta AI Llama v2 LLM Model:
@@ -63,4 +86,12 @@ autotrain llm --train \
   * https://huggingface.co/docs/huggingface_hub/quick-start
   * https://huggingface.co/docs/autotrain/index
 * GRadio: https://www.gradio.app/guides/quickstart
+* NVIDIA CUDA on Windows Subsystem for Linux v2 (aka WSL2):
+  * https://developer.nvidia.com/cuda/wsl
+  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
+  * https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
+  * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
+  * https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
+* NVIDIA CUDA for Ubuntu Linux on Baremetal:
+  * https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl
 * Tricky references in the [main.py](main.py) source code.

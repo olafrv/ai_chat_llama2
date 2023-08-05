@@ -12,26 +12,30 @@ IMAGE_APP_DIR="/opt/${REPOSITORY}"
 GITHUB_API="https://api.github.com/repos/${GITHUB_USER}/${REPOSITORY}"
 GITHUB_API_JSON:=$(shell printf '{"tag_name": "%s","target_commitish": "main","name": "%s","body": "Version %s","draft": false,"prerelease": false}' ${VERSION} ${VERSION} ${VERSION})
 CPUS=2
+PYTHON_VENV_DIR?="./venv"
 
 metadata: 
+	@ echo "${PYTHON_VENV_DIR}"
 	@ echo "METADATA: NAME=${NAME}, VERSION=${VERSION}"
 
 install: install.venv
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& pip3 install -Ur requirements.txt
 
 # customize!
 install.dev: install.venv
 	@ true \
 		&& sudo apt install -y patchelf ccache \
-		&& . venv/bin/activate \
+		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& pip3 install -Ur requirements-dev.txt
 
 # customize!
 install.venv: install.base
 	@ true \
 		&& sudo apt install -y zlib1g-dev libjpeg-dev libpq-dev \
-		&& test -d venv || python3 -m venv venv \
+		&& test -d ${PYTHON_VENV_DIR} \
+		|| python3 -m venv ${PYTHON_VENV_DIR} \
+		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& pip3 install -Ur requirements.txt \
     	&& pip3 install --upgrade pip
 
@@ -48,10 +52,10 @@ uninstall: uninstall.venv clean
 uninstall.venv: 
 	#pip3 list --user --format=freeze | sed 's/=.*$//' | xargs pip3 uninstall --yes
 	#@ test ! -d env \
-	#	|| . venv/bin/activate \
+	#	|| . ${PYTHON_VENV_DIR}/bin/activate \
 	#	&& pip3 uninstall --yes -r requirements.txt \
 	#	&& pip3 uninstall --yes -r requirements-dev.txt
-	rm -rf venv
+	rm -rf ${PYTHON_VENV_DIR}
 
 # customize!
 clean:
@@ -59,14 +63,14 @@ clean:
 
 # customize!
 check-config:
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py --check-config
 
 build: install.dev
 	# https://nuitka.net/doc/user-manual.html
 	# https://nuitka.net/info/debian-dist-packages.html (Work in ubuntu!)
 	# python3 -m nuitka --standalone --onefile --enable-plugin=numpy -o ${NAME}.bin main.py
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 -m nuitka --include-package=${NAME} --output-dir=./build \
 			--show-progress --report=./build/main.py.xml -j6 \
 			main.py
@@ -75,7 +79,7 @@ build: install.dev
 # customize!
 run:
 	@ mkdir -p logs \
-		&& . venv/bin/activate \
+		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py
 
 run.bin:
@@ -83,30 +87,30 @@ run.bin:
 
 test:
 	# https://docs.pytest.org/
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& pytest -s -s --disable-warnings ${NAME}/tests/
 
 # customize!
 test.coverage:
 	# https://coverage.readthedocs.io
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run main.py \
 		&& coverage report --show-missing ${NAME}/*.py
 
 # customize!
 test.coverage.report:
-	@ . venv/bin/activate \
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run -m pytest -s --disable-warnings ${NAME}/tests/ \
 		&& coverage report --show-missing ${NAME}/*.py
 
 profile: install.dev
 	# https://docs.python.org/3/library/profile.html
 	@ mkdir -p profile \
-		&& . venv/bin/activate \
+		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 -m cProfile -o profile/main.py.prof main.py
 
 profile.view: install.dev
-	@ . venv/bin/activate && snakeviz profile/main.py.prof
+	@ . ${PYTHON_VENV_DIR}/bin/activate && snakeviz profile/main.py.prof
 
 docker.build:
 	@ docker build -t ${IMAGE_NAME}:${VERSION} .

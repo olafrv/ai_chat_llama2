@@ -3,42 +3,52 @@ import gradio
 from threading import Thread
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from transformers import TextIteratorStreamer
-# from auto_gptq import AutoGPTQForCausalLM
+try:
+    from auto_gptq import AutoGPTQForCausalLM
+except ModuleNotFoundError:
+    print("WARNING: module 'auto_gptq' is not installed, required for GPTQ models.")
+    
 from huggingface_hub import hf_hub_download
+from huggingface_hub import login as hf_hub_login
 from llama_cpp import Llama  # type: ignore
 from llama_formatter import llama_formatter
+try:
+    import torch
+    print("CUDA Available for Pytorch: " + str(torch.cuda.is_available()))
+except ModuleNotFoundError:
+    print("module 'torch' is not installed or CUDA is not available.")
 
 MODELS_METADATA = (
     {
         "format": "gpu",
         "name": "meta-llama/Llama-2-7b-chat-hf",
-        "file": None,
-        "path": "./models"
     },
     {
         "format": "ggml",
         "name": "TheBloke/Llama-2-7B-Chat-GGML",
         "file": "llama-2-7b-chat.ggmlv3.q4_K_M.bin",
-        "path": "./models"
     },
     {
         "format": "gptq",
         "name": "TheBloke/Llama-2-7b-Chat-GPTQ",
-        "file": None,
-        "path": "./models"
     }
 )
 
 
 def init_model_and_tokenizer(model_metadata):
-    if not os.path.exists(model_metadata["path"]):
-        os.makedirs(model_metadata["path"])
+    path = model_metadata["path"] + "/" + model_metadata["name"]
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    filename = model_metadata["file"] \
+        if 'file' in model_metadata.keys() else "config.json"
+    hf_hub_login(token=os.environ.get("HUGGINGFACE_TOKEN"))
+    file_path = hf_hub_download(
+        repo_id=model_metadata["name"],
+        filename=filename,
+        local_dir=path)
 
     if model_metadata["format"] == "ggml":
-        file_path = hf_hub_download(
-            repo_id=model_metadata["name"],
-            filename=model_metadata["file"],
-            local_dir=model_metadata["path"])
         model = Llama(file_path, n_ctx=2048)  # 4096
         tokenizer = None
     elif model_metadata["format"] == "gptq":
@@ -48,6 +58,7 @@ def init_model_and_tokenizer(model_metadata):
             use_safetensors=True, use_triton=False)
         tokenizer = AutoTokenizer.from_pretrained(model_metadata["name"])
     else:
+        print("Loading model to GPU...")
         model = AutoModelForCausalLM.from_pretrained(
             model_metadata["name"], device_map="auto", token=True)
         tokenizer = AutoTokenizer.from_pretrained(
@@ -130,10 +141,14 @@ def ui(model_metadata: dict, model: Llama, tokenizer):
 
 
 def main():
-    model_metadata = MODELS_METADATA[1]
+    model_index = int(os.environ.get("AI_LLAMA2_CHAT_MODEL"))
+    model_metadata = MODELS_METADATA[model_index]
+    model_metadata["path"] = \
+        os.environ.get("AI_LLAMA2_CHAT_STORE") or "./models"
     model, tokenizer = init_model_and_tokenizer(model_metadata)
     ui(model_metadata, model, tokenizer)
 
 
 if __name__ == '__main__':
     main()
+
