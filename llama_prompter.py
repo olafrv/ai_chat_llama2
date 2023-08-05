@@ -45,29 +45,33 @@ class llama_prompter:
         filename = model_metadata["file"] \
             if 'file' in model_metadata.keys() else "config.json"
 
-        hf_hub_login(token=huggingface_token)
-        file_path = hf_hub_download(
-            repo_id=model_metadata["name"],
-            filename=filename,
-            cache_dir=path,
-            local_dir=path)
+        if 'offline' not in model_metadata \
+                or model_metadata["offline"] is False:
+            hf_hub_login(token=huggingface_token)
+            file_path = hf_hub_download(
+                repo_id=model_metadata["name"],
+                filename=filename,
+                cache_dir=path,
+                local_dir=path)
 
         if model_metadata["format"] == "ggml":
             self.model = Llama(file_path, n_ctx=2048)  # 4096
 
         elif model_metadata["format"] == "gptq":
             self.model = AutoGPTQForCausalLM.from_quantized(
-                        model_metadata["name"], device_map="auto",
+                        './models/olafrv/Llama-2-7b-chat-hf-trained', device_map="auto",
                         use_safetensors=True, use_triton=False)
             self.tokenizer = AutoTokenizer.from_pretrained(
-                            model_metadata["name"])
+                            './models/olafrv/Llama-2-7b-chat-hf-trained')
 
         else:
             self.model = AutoModelForCausalLM.from_pretrained(
-                        model_metadata["name"], device_map="auto",
+                        model_metadata["name"],
+                        device_map="auto",
                         token=True)
             self.tokenizer = AutoTokenizer.from_pretrained(
-                            model_metadata["name"], token=True)
+                            model_metadata["name"],
+                            token=True)
 
     """ Get the current prompt text in llama v2 format """
     def get_prompt(self) -> str:

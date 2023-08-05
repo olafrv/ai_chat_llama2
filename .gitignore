@@ -1,7 +1,8 @@
 # hugging face downloads
 models
-# AutoGPTQ compiled
+# Temporal (e.g. install, test)
 AutoGPTQ
+trl
 # python
 venv
 __pycache__

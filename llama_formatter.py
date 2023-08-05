@@ -6,6 +6,8 @@
  * https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ/discussions/5
 """
 
+import csv
+
 
 class llama_formatter:
     BOS, EOS = "<s>", "</s>"  # Sequence tokens
@@ -20,6 +22,30 @@ class llama_formatter:
         self.prompts.append(
             {"author": "sysdef", "text": self.DEFAULT_SYSTEM_PROMPT}
         )
+
+    # CSV Fields: instruction, input="", output, text="LLM seq."
+    def format_dataset_csv(self, input_filepath, output_filepath):
+        input_fields = ["instruction", "input", "output"]  # *-.csv
+        output_fields = ["instruction", "input", "output", "text"]  # *-fmt.csv
+        with open(input_filepath, newline='') as input_file:
+            reader = csv.DictReader(input_file, fieldnames=input_fields)
+            next(reader)  # skip header line
+            with open(output_filepath, "w") as output_file:
+                writer = csv.DictWriter(
+                    output_file, fieldnames=output_fields,
+                    delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL
+                )
+                writer.writeheader()
+                for row in reader:
+                    # Do not remove trailing spaces it can break the model
+                    text = f"{self.BOS}{self.B_INST} {row['instruction'].strip()} {self.E_INST}"
+                    text += f" {row['output'].strip()}{self.EOS}"
+                    writer.writerow({
+                        "instruction": row["instruction"],
+                        "input": row["input"],
+                        "output": row["output"],
+                        "text": text
+                    })
 
     def add(self, author, text) -> None:
         assert author in ("user", "sys")

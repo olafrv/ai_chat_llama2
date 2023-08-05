@@ -37,7 +37,7 @@ install.dev: install.venv
 # customize!
 install.venv: install.base
 	@ true \
-		&& sudo apt install -y zlib1g-dev libjpeg-dev libpq-dev \
+		&& sudo apt install -y zlib1g-dev libjpeg-dev libpq-dev git-lfs \
 		&& test -d ${PYTHON_VENV_DIR} \
 		|| python3 -m venv ${PYTHON_VENV_DIR} \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
@@ -45,6 +45,7 @@ install.venv: install.base
 		&& pip3 install -Ur requirements.txt \
 		&& CMAKE_ARGS='-DLLAMA_CUBLAS=on' NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \
 			FORCE_CMAKE=1 CXX=g++-11 CC=gcc-11 pip install llama-cpp-python --no-cache-dir \
+		&& cd tmp \
 		&& test -d AutoGPTQ || git clone https://github.com/PanQiWei/AutoGPTQ.git \
 		&& cd AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
 
@@ -90,6 +91,29 @@ run:
 	@ mkdir -p logs \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py
+
+# fix me!
+#
+# It trains the Llama v2 HF model but the result is unusable on llama_prompter.py
+#
+# I mean here: tmp/trl/examples/scripts/sft_trainer.py even tried this:
+#
+# Step 7: Olaf trying to fix the config saving
+# quantization_config.to_json_file(script_args.output_dir + "/quantize_config.json")
+# model.config.save_pretrained(script_args.output_dir)
+#
+train:
+	@ mkdir -p datasets \
+		&& . ${PYTHON_VENV_DIR}/bin/activate \
+		&& python3 main_train.py \
+		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
+    		--model_name meta-llama/Llama-2-7b-chat-hf \
+    		--dataset_name datasets/olafrv \
+			--output_dir models/olafrv/Llama-2-7b-chat-hf-trained \
+    		--load_in_4bit \
+    		--use_peft \
+    		--batch_size 4 \
+    		--gradient_accumulation_steps 2
 
 run.bin:
 	@ ./build/main.py.bin

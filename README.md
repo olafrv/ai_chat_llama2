@@ -25,22 +25,27 @@ AI_LLAMA2_CHAT_MODEL=2 make run
 
 ## Model Training (Draft)
 
-* Train the base LLAMA v2 model with custom data set:
+> **TODO:**  Currently none approachs are working!
+
+Train the base LLAMA v2 model with custom data set:
+
 ```bash
+make train
+```
+
+```bash
+# Llama2 is not support by AutoTrain (Aug/2023)
 # autotrain llm --help
 # autotrain setup --update-torch  # Only if using Google Collab
-autotrain llm --train \
---data_path ./data \
---model meta-llama/Llama-2-7b-chat-hf \
---learning_rate 2e-4 \
---num_train_epochs 3 \
---train_batch_size 12 \ 
---block-size 2048
---use_peft \
---train_on_inputs \
---project_name llama_trained \
---use_int4 \
---trainer sft
+# autotrain setup
+# HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 autotrain llm --train \
+#			--data_path datasets/olafrv \
+#			--model meta-llama/Llama-2-7b-chat-hf \
+#			--text_column text --learning_rate 2e-4 --num_train_epochs 3 \
+#			--train_batch_size 12 --block_size 1024 --use_peft \
+#			--project_name models/olafrv/Llama-2-7b-chat-hf-trained \
+#			--use_int4 --trainer sft > logs/training.log &
+# tail -f logs/training.log
 ```
 
 ## NVIDIA GPU Driver and Utilities
@@ -185,6 +190,8 @@ FInally, you can `make install` the AI Chat Llama v2.
   * https://huggingface.co
   * https://huggingface.co/docs/huggingface_hub/quick-start
   * https://huggingface.co/docs/autotrain/index
+  * https://huggingface.co/blog/llama2
+  * 
 * GRadio:
   * https://www.gradio.app/guides/quickstart
   * https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks

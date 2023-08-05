@@ -15,5 +15,13 @@
         # Best: Very low mem footprint and emojies! (GPU needed)
         "format": "gptq",  # GPTQ Library
         "name": "TheBloke/Llama-2-7b-Chat-GPTQ"   
-    }
+    },
+    {
+        # Poor: High mem footprint >20GB (GPU needed but still slow)
+        # This requires that you run 'main train' to generate the model
+        # But LLama v2 is just incompatible with the HF library
+        "format": "gptq",  # Huggingface Library
+        "name": "olafrv/Llama-2-7b-chat-hf-trained",
+        "offline": True
+    },
 ]
