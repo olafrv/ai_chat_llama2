@@ -25,19 +25,13 @@ AI_LLAMA2_CHAT_MODEL=2 make run
 
 ## Model Training (Draft)
 
-* Now install python environment and setup autotrain:
-```bash
-make install
-autotrain setup
-```
-
 * Train the base LLAMA v2 model with custom data set:
 ```bash
 # autotrain llm --help
 # autotrain setup --update-torch  # Only if using Google Collab
 autotrain llm --train \
---data_path . \
---model meta-llama/Llama-2-7b-hf \
+--data_path ./data \
+--model meta-llama/Llama-2-7b-chat-hf \
 --learning_rate 2e-4 \
 --num_train_epochs 3 \
 --train_batch_size 12 \ 
