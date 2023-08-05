@@ -77,6 +77,9 @@ class llama_prompter:
     def stack(self, role: str, text: str) -> None:
         self.formatter.add(role, text)
 
+    def empty(self) -> None:
+        self.formatter.empty()
+
     """ Submit a prompt to the model and return a streamer object """
     def submit(self, prompt: str):
         kwargs = dict(temperature=0.6, top_p=0.9)

@@ -17,7 +17,7 @@ make install
 # Llama v2 models will be downloaded (~15 GiB)
 export AI_LLAMA2_CHAT_STORE=./models 
 # export PYTHON_VENV_DIR=~/venv/ai_chat_llama2
-AI_LLAMA2_CHAT_MODEL=0 make run   
+AI_LLAMA2_CHAT_MODEL=2 make run   
 # Navigate in your browser at 127.0.0.1:7860
 ```
 

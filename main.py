@@ -5,14 +5,19 @@ from llama_prompter import llama_prompter
 
 
 def ui(prompter: llama_prompter):
-    # UI for Chatbot
+    # Define the UI for Chatbot
     with gradio.Blocks() as ui:
-        chatbot = gradio.Chatbot()
-        msg = gradio.Textbox()
-        clear = gradio.Button("Clear")
+        chatbot = gradio.Chatbot()  # return history
+        textbox = gradio.Textbox()  # return user message
+        clearbt = gradio.Button("Clear")  # clear message
 
-        def user(user_message: str, history: list):
-            return "", history + [[user_message, None]]
+        def send_msg(message: str, history: list):
+            return "", history + [[message, None]]
+
+        def clear_chat():
+            print("Forgeting history...")
+            prompter.empty()
+            return []
 
         def bot(history: list):
             # history -> prompter.stack:
@@ -41,11 +46,12 @@ def ui(prompter: llama_prompter):
                     if (bloviated):
                         break  # Go back to wait for instructions
 
-        msg.submit(
-                user, [msg, chatbot], [msg, chatbot], queue=False
-             ).then(bot, chatbot, chatbot)
-        clear.click(lambda: None, None, chatbot, queue=False)
+        textbox.submit(
+                send_msg, [textbox, chatbot], [textbox, chatbot], queue=False
+            ).then(bot, chatbot, chatbot)
+        clearbt.click(clear_chat, None, chatbot, queue=False)
 
+    # Start the UI for the Chatbot
     ui.queue()
     ui.launch(share=False, debug=True)  # share=True is insecure!
 

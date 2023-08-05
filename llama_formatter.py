@@ -26,6 +26,11 @@ class llama_formatter:
         prompt = {"author": author, "text": text}
         self.prompts.append(prompt)
 
+    def empty(self) -> None:
+        self.prompts = []
+        self.prompts_output = ""
+        self.prompts_index = 0
+
     def concat_last(self, text) -> None:
         self.prompts[-1]["text"] += text
 
