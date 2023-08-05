@@ -57,6 +57,7 @@ def init_model_and_tokenizer(model_metadata):
 
     return model, tokenizer
 
+
 def bot_model_pipe(token, history, formatter):
     bloviated = False  # True if model got crazy (monologue)
     merged = history[-1][1] + token
@@ -148,7 +149,7 @@ def main():
     model_index = int(os.environ.get("AI_LLAMA2_CHAT_MODEL"))
     assert model_index in range(0, len(MODELS_METADATA)), \
         f"Invalid model index: {model_index}"
-    
+
     model_metadata = MODELS_METADATA[model_index]
     print(f"Using model: {model_metadata['name']}")
 
