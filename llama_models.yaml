@@ -1,0 +1,19 @@
+# Huggingface.co models to use for the llama2 chatbot
+[
+    {
+        # High mem footprint (but GPU needed!)
+        "format": "default",
+        "name": "meta-llama/Llama-2-7b-chat-hf"
+    },
+    {
+        # Very fast and low mem footprint (CPU/GPU)
+        "format": "ggml",
+        "name": "TheBloke/Llama-2-7B-Chat-GGML",
+        "file": "llama-2-7b-chat.ggmlv3.q4_K_M.bin"
+    },
+    {
+        # Very low mem footprint (but GPU needed!)
+        "format": "gptq",
+        "name": "TheBloke/Llama-2-7b-Chat-GPTQ"
+    }
+]

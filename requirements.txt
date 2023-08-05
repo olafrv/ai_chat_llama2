@@ -1,9 +1,13 @@
-gradio
-huggingface_hub
-autotrain-advanced
+# Basic dependencies
 transformers
-# auto-gptq
-# Maybe you need to install it manually: https://github.com/oobabooga/text-generation-webui/issues/1534
-# CMAKE_ARGS="-DLLAMA_CUBLAS=on" NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' FORCE_CMAKE=1 CXX=g++-11  CC=gcc-11 pip install llama-cpp-python --no-cache-dir
-llama-cpp-python
-# fire
+huggingface_hub
+gradio
+
+# llama-cpp-python, installed 'make install' in the root folder
+
+# Only needed for GPTQ models
+# auto-gptq and must be installed manually see README.md
+urllib3==1.26.16
+
+# Only needed for Huggingface Autrotrain
+autotrain-advanced

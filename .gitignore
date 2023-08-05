@@ -1,5 +1,7 @@
 # hugging face downloads
 models
+# AutoGPTQ compiled
+AutoGPTQ
 # python
 venv
 __pycache__

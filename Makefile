@@ -1,8 +1,9 @@
 #!/usr/bin/make
 
-# Environment Variables:
+# Environment Variables
 # - GITHUB_USER
 # - GITHUB_TOKEN
+# - PYTHON_VENV_DIR
 
 NAME=$(shell cat METADATA | grep NAME | cut -d"=" -f2)
 VERSION:=$(shell cat METADATA | grep VERSION | cut -d"=" -f2)
@@ -14,9 +15,13 @@ GITHUB_API_JSON:=$(shell printf '{"tag_name": "%s","target_commitish": "main","n
 CPUS=2
 PYTHON_VENV_DIR?="./venv"
 
-metadata: 
-	@ echo "${PYTHON_VENV_DIR}"
-	@ echo "METADATA: NAME=${NAME}, VERSION=${VERSION}"
+# CAUTION: sensitive environment variables!
+collect: 
+	@ echo "----------------------------"
+	@ env
+	@ echo "----------------------------"
+	@ python3 -m torch.utils.collect_env
+	@ echo "----------------------------"
 
 install: install.venv
 	@ . ${PYTHON_VENV_DIR}/bin/activate \
@@ -36,8 +41,11 @@ install.venv: install.base
 		&& test -d ${PYTHON_VENV_DIR} \
 		|| python3 -m venv ${PYTHON_VENV_DIR} \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
+    	&& pip3 install --upgrade pip \
 		&& pip3 install -Ur requirements.txt \
-    	&& pip3 install --upgrade pip
+		&& echo "https://github.com/oobabooga/text-generation-webui/issues/1534" \ 
+		&& CMAKE_ARGS="-DLLAMA_CUBLAS=on" NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \ 
+		   FORCE_CMAKE=1 CXX=g++-11  CC=gcc-11 pip install llama-cpp-python --no-cache-dir
 
 install.base:
 	@ sudo apt update \
