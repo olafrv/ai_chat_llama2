@@ -1,8 +1,11 @@
-# This class transform the chat history into a prompt for llama model
-# * https://github.com/facebookresearch/llama/tree/main
-# * https://github.com/facebookresearch/llama/blob/main/llama/generation.py
-# * https://github.com/facebookresearch/llama/blob/main/llama/tokenizer.py
-# * https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ/discussions/5
+"""
+ This class transform the chat history into a prompt for llama model
+ * https://github.com/facebookresearch/llama/tree/main
+ * https://github.com/facebookresearch/llama/blob/main/llama/generation.py
+ * https://github.com/facebookresearch/llama/blob/main/llama/tokenizer.py
+ * https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ/discussions/5
+"""
+
 
 class llama_formatter:
     BOS, EOS = "<s>", "</s>"  # Sequence tokens
@@ -18,19 +21,18 @@ class llama_formatter:
             {"author": "sysdef", "text": self.DEFAULT_SYSTEM_PROMPT}
         )
 
-    def add(self, author, text):
+    def add(self, author, text) -> None:
         assert author in ("user", "sys")
         prompt = {"author": author, "text": text}
         self.prompts.append(prompt)
-        return format(prompt)
 
-    def concat_last(self, text):
+    def concat_last(self, text) -> None:
         self.prompts[-1]["text"] += text
 
-    def replace_last(self, text):
+    def replace_last(self, text) -> None:
         self.prompts[-1]["text"] = text
 
-    def format(self):
+    def format(self) -> str:
 
         while self.prompts_index < len(self.prompts):
 
