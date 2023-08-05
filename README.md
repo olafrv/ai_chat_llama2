@@ -9,22 +9,21 @@ on your local PC (some without GPU but a bit slow).
 
 > The best model is the N=2 GPTQ [Quantized](https://huggingface.co/docs/optimum/concept_guides/quantization) require GPU, see [llama_models.yaml](llama_models.yaml).
 
+> Register at https://huggingface.co to get a token, ask for download access to the models, and [later train them with Autotrain](https://huggingface.co/docs/autotrain/index)
+
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
 sudo apt install make
 make install  # If fails see NVIDIA section
-export AI_LLAMA2_CHAT_STORE=./models 
-# export PYTHON_VENV_DIR=~/venv/ai_chat_llama2
-# Llama v2 models will be downloaded (~15 GiB)
+export AI_LLAMA2_CHAT_STORE=./models
+export HUGGINGFACE_TOKEN=***********
+# Llama v2 models will be downloaded (10-20 GiB / each)
 AI_LLAMA2_CHAT_MODEL=2 make run   
 # Navigate in your browser to 127.0.0.1:7860
 ```
 
 ## Model Training (Draft)
-
-* Register at https://huggingface.co to use AutoTrain Advanced:
-https://huggingface.co/docs/autotrain/index
 
 * Now install python environment and setup autotrain:
 ```bash
