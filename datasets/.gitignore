@@ -1,5 +1,5 @@
-# Security exclusions of sensitive data.
-*
 # Part of the `olaf` project.
+/**
+!/.gitignore
+!olafrv/
 !olafrv/**
-!.gitignore
