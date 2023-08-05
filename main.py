@@ -50,7 +50,8 @@ def init_model_and_tokenizer(model_metadata):
     else:
         model = AutoModelForCausalLM.from_pretrained(
             model_metadata["name"], device_map="auto", token=True)
-        tokenizer = AutoTokenizer.from_pretrained(model_metadata["name"], token=True)
+        tokenizer = AutoTokenizer.from_pretrained(
+            model_metadata["name"], token=True)
 
     return model, tokenizer
 
@@ -83,7 +84,8 @@ def ui(model_metadata: dict, model: Llama, tokenizer):
 
             if model_metadata["format"] == 'ggml':
                 kwargs["max_tokens"] = 512
-                # stream=False, https://github.com/abetlen/llama-cpp-python/issues/372
+                # stream=False
+                # https://github.com/abetlen/llama-cpp-python/issues/372
                 for chunk in model(prompt=prompt, stream=True, **kwargs):
                     token = chunk["choices"][0]["text"]
                     together = history[-1][1] + token
