@@ -225,5 +225,6 @@ FInally, you can `make install` the AI Chat Llama v2.
 * https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
 * https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
-* NVIDIA CUDA for Ubuntu Linux on Baremetal:
+
+### NVIDIA CUDA for Ubuntu Linux on Baremetal:
 * https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl
