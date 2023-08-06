@@ -102,7 +102,7 @@ run:
 train:
 	@ mkdir -p datasets \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& python3 llama_train.py \
+		&& python3 dataset_format.py \
 		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
     		--model_name meta-llama/Llama-2-7b-chat-hf \
     		--dataset_name datasets/olafrv \
