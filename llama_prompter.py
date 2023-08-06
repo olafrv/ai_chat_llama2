@@ -11,8 +11,7 @@ from huggingface_hub import hf_hub_download
 from huggingface_hub import login as hf_hub_login
 from llama_cpp import Llama  # type: ignore
 from transformers import AutoModelForCausalLM, AutoTokenizer
-# https://huggingface.co/docs/trl/main/en/installation
-from tmp.trl.trl import AutoModelForCausalLMWithValueHead
+from trl import AutoModelForCausalLMWithValueHead
 try:
     import torch
     print("CUDA Available for Pytorch: " + str(torch.cuda.is_available()))

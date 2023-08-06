@@ -1,9 +1,6 @@
 """
     Called from Makefile to train a model
-    using the data from datasets/olafrv/fmt/
-    References:
-    - https://huggingface.co/docs/trl/main/en/index
-    - ./trl/examples/scripts/sft_trainer.py
+    using the data from datasets/ directory
 """
 
 from llama_formatter import llama_formatter

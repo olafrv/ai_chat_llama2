@@ -202,6 +202,10 @@ FInally, you can `make install` the AI Chat Llama v2.
   * For GPUs: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
   * GPTQ Quantized: https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ
   * GGML Quantized: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
+* Transformer Reinforcement Learning
+  * https://huggingface.co/docs/trl/main/en/installation
+* Supervised Fine-tuning Trainer
+  * https://huggingface.co/docs/trl/main/en/sft_trainer
 
 ### HuggingFace
 

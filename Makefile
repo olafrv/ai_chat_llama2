@@ -89,20 +89,14 @@ run:
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py
 
-# fix me!
-#
-# It trains the Llama v2 HF model but the result is unusable on llama_prompter.py
-#
-# I mean here: tmp/trl/examples/scripts/sft_trainer.py even tried this:
-#
-# Step 7: Olaf trying to fix the config saving
-# quantization_config.to_json_file(script_args.output_dir + "/quantize_config.json")
-# model.config.save_pretrained(script_args.output_dir)
-#
+# References:
+# - https://huggingface.co/docs/trl/main/en/index
+# - https://huggingface.co/docs/trl/main/en/sft_trainer
 train:
 	@ mkdir -p datasets \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 dataset_format.py \
+		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl
 		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
     		--model_name meta-llama/Llama-2-7b-chat-hf \
     		--dataset_name datasets/olafrv \
