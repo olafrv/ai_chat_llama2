@@ -11,7 +11,6 @@ from huggingface_hub import hf_hub_download
 from huggingface_hub import login as hf_hub_login
 from llama_cpp import Llama  # type: ignore
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from peft import PeftModel
 # https://huggingface.co/docs/trl/main/en/installation
 from tmp.trl.trl import AutoModelForCausalLMWithValueHead
 try:
