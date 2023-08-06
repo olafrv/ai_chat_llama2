@@ -15,7 +15,7 @@ on your local PC (some without GPU but a bit slow).
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
 sudo apt install make
-make install  # If fails see NVIDIA section
+make install  # If fails see NVIDIA section below
 export AI_LLAMA2_CHAT_STORE=./models
 export HUGGINGFACE_TOKEN=***********
 # Llama v2 models will be downloaded (10-20 GiB / each)
