@@ -140,6 +140,7 @@ ii  gettext-base                    0.21-4ubuntu4                           amd6
 ii  gir1.2-glib-2.0:amd64           1.72.0-1                                amd64        Introspection data for GLib, GObject, Gio and GModule
 ii  gir1.2-packagekitglib-1.0       1.2.5-2ubuntu2                          amd64        GObject introspection data for the PackageKit GLib library
 ii  git                             1:2.34.1-1ubuntu1.9                     amd64        fast, scalable, distributed revision control system
+ii  git-lfs                         3.0.2-1ubuntu0.2                        amd64        Git Large File Support
 ii  git-man                         1:2.34.1-1ubuntu1.9                     all          fast, scalable, distributed revision control system (manual pages)
 ii  gnupg                           2.2.27-3ubuntu2.1                       all          GNU privacy guard - a free PGP replacement
 ii  gnupg-l10n                      2.2.27-3ubuntu2.1                       all          GNU privacy guard - localization files
