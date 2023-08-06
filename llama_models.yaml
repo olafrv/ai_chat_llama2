@@ -26,4 +26,11 @@
         "name": "olafrv/Llama-2-7b-chat-hf-trained",
         "online": False
     },
+    {
+        # ...
+        # This requires you to run 'make train' to generate it
+        "format": "tlrsft",
+        "name": "models/olafrv/Llama-2-7b-Chat-GPTQ-trained",
+        "online": False
+    },
 ]
