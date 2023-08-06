@@ -42,9 +42,8 @@ install.venv: install.base
 		&& pip3 install -Ur requirements.txt \
 		&& CMAKE_ARGS='-DLLAMA_CUBLAS=on' NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \
 			FORCE_CMAKE=1 CXX=g++-11 CC=gcc-11 pip install llama-cpp-python --no-cache-dir \
-		&& test -d tmp/AutoGPTQ
-		|| cd tmp && git clone https://github.com/PanQiWei/AutoGPTQ.git \
-		&& cd AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
+		&& test -d tmp/AutoGPTQ || git clone https://github.com/PanQiWei/AutoGPTQ.git tmp/AutoGPTQ \
+		&& cd tmp/AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
 
 install.base:
 	@ sudo apt update \
@@ -89,23 +88,39 @@ run:
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py
 
+
+
 # References:
 # - https://huggingface.co/docs/trl/main/en/index
 # - https://huggingface.co/docs/trl/main/en/sft_trainer
-train:
+train.gptq: train.trl
+	@ python3 tmp/trl/examples/scripts/sft_trainer.py \
+		--model_name TheBloke/Llama-2-7b-Chat-GPTQ \
+		--dataset_name datasets/olafrv \
+		--output_dir models/olafrv/Llama-2-7b-Chat-GPTQ-trained \
+		--load_in_4bit \
+		--use_peft \
+		--batch_size 4 \
+		--gradient_accumulation_steps 2
+
+# References:
+# - https://huggingface.co/docs/trl/main/en/index
+# - https://huggingface.co/docs/trl/main/en/sft_trainer
+train.orig: train.trl
+	@ python3 tmp/trl/examples/scripts/sft_trainer.py \
+		--model_name meta-llama/Llama-2-7b-chat-hf \
+		--dataset_name datasets/olafrv \
+		--output_dir models/olafrv/Llama-2-7b-chat-hf-trained \
+		--load_in_4bit \
+		--use_peft \
+		--batch_size 4 \
+		--gradient_accumulation_steps 2
+
+train.trl:
 	@ mkdir -p datasets \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 dataset_format.py \
-		&& test -d tmp/trl \
-		|| cd tmp && git clone https://github.com/lvwerra/trl \
-		&& python3 trl/examples/scripts/sft_trainer.py \
-    		--model_name meta-llama/Llama-2-7b-chat-hf \
-    		--dataset_name datasets/olafrv \
-			--output_dir models/olafrv/Llama-2-7b-chat-hf-trained \
-    		--load_in_4bit \
-    		--use_peft \
-    		--batch_size 4 \
-    		--gradient_accumulation_steps 2
+		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl tmp/trl
 
 run.bin:
 	@ ./build/main.py.bin
