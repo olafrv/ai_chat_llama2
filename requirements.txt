@@ -1,4 +1,4 @@
-# See req-freeze-*.txt for the exact versions I use
+# See freeze-*.txt for the more packages and exact versions of the dependencies
 
 accelerate @ git+https://github.com/huggingface/accelerate.git@30eff605df5db9ba20289a0c7471e4d8547a5a8f
 autotrain-advanced @ git+https://github.com/huggingface/autotrain-advanced.git@72463c479d0c236aee35cd74d08e828deb6d0f11
