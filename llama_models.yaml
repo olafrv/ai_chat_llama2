@@ -20,8 +20,8 @@
         "online" : True 
     },
     {
-        # Unknown: Testing but requires >32 GB RAM (GPU needed)
-        # This requires that you run 'main train' to generate the model
+        # Poorest: Highest mem footprint >32 GB RAM (GPU needed)
+        # This requires you to run 'make train' to generate it
         "format": "tlrsft",
         "name": "olafrv/Llama-2-7b-chat-hf-trained",
         "online": False
