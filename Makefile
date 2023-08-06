@@ -42,9 +42,9 @@ install.venv: install.base
 		&& pip3 install -Ur requirements.txt \
 		&& CMAKE_ARGS='-DLLAMA_CUBLAS=on' NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++-11' \
 			FORCE_CMAKE=1 CXX=g++-11 CC=gcc-11 pip install llama-cpp-python --no-cache-dir \
-		&& cd tmp \
-		&& test -d AutoGPTQ || git clone https://github.com/PanQiWei/AutoGPTQ.git \
-		&& cd AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
+		&& test -d tmp/AutoGPTQ
+		|| cd tmp && git clone https://github.com/PanQiWei/AutoGPTQ.git \
+		&& BUILD_CUDA_EXT=1 pip3 install .
 
 install.base:
 	@ sudo apt update \
@@ -96,8 +96,9 @@ train:
 	@ mkdir -p datasets \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 dataset_format.py \
-		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl
-		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
+		&& test -d tmp/trl \
+		|| cd tmp && git clone https://github.com/lvwerra/trl \
+		&& python3 trl/examples/scripts/sft_trainer.py \
     		--model_name meta-llama/Llama-2-7b-chat-hf \
     		--dataset_name datasets/olafrv \
 			--output_dir models/olafrv/Llama-2-7b-chat-hf-trained \
