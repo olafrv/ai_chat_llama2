@@ -3,6 +3,7 @@ models/*
 !models/README.md
 # Temporal (e.g. install, test)
 tmp
+offload
 # python
 venv
 __pycache__
