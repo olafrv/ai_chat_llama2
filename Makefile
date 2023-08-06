@@ -44,7 +44,7 @@ install.venv: install.base
 			FORCE_CMAKE=1 CXX=g++-11 CC=gcc-11 pip install llama-cpp-python --no-cache-dir \
 		&& test -d tmp/AutoGPTQ
 		|| cd tmp && git clone https://github.com/PanQiWei/AutoGPTQ.git \
-		&& BUILD_CUDA_EXT=1 pip3 install .
+		&& cd AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
 
 install.base:
 	@ sudo apt update \
