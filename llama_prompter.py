@@ -29,7 +29,7 @@ from llama_formatter import llama_formatter
 
 
 class llama_prompter:
-    timeout = 60*10  # seconds
+    timeout = 60*60*24  # seconds
     model_metadata = None
     model = None
     tokenizer = None
