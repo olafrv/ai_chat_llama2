@@ -1,7 +1,6 @@
 import os
 import yaml
 import gradio
-from time import sleep
 from llama_prompter import llama_prompter
 import argparse
 
