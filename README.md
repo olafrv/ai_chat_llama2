@@ -25,14 +25,13 @@ AI_LLAMA2_CHAT_MODEL=2 make run
 
 ## Model Training (Draft)
 
-Train the base LLAMA v2 model with custom data set:
+Train the base LLAMA v2 original model with custom data set:
 
 ```bash
-# Currently under development!
 make train
 ```
 
-Also you should be able to use AutoTrain:
+I expect that in a couple of months we can use AutoTrain:
 ```bash
 # Llama2 is not supported by AutoTrain (Aug/2023)
 # autotrain llm --help
