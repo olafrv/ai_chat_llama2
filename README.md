@@ -25,27 +25,42 @@ AI_LLAMA2_CHAT_MODEL=2 make run
 
 ## Model Training (Draft)
 
-> **TODO:**  Currently none approachs are working!
-
 Train the base LLAMA v2 model with custom data set:
 
 ```bash
+# Currently under development!
 make train
 ```
 
+Also you should be able to use AutoTrain:
 ```bash
-# Llama2 is not support by AutoTrain (Aug/2023)
+# Llama2 is not supported by AutoTrain (Aug/2023)
 # autotrain llm --help
 # autotrain setup --update-torch  # Only if using Google Collab
 # autotrain setup
 # HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 autotrain llm --train \
-#			--data_path datasets/olafrv \
+#			--data_path datasets/olafrv/fmt \
 #			--model meta-llama/Llama-2-7b-chat-hf \
 #			--text_column text --learning_rate 2e-4 --num_train_epochs 3 \
 #			--train_batch_size 12 --block_size 1024 --use_peft \
-#			--project_name models/olafrv/Llama-2-7b-chat-hf-trained \
+#			--project_name olafrv/Llama-2-7b-chat-hf-trained \
 #			--use_int4 --trainer sft > logs/training.log &
 # tail -f logs/training.log
+```
+
+## WSL v2 increasing RAM and Swap
+
+To increase the RAM and SWAP memory on Windows Subsystem for Linux v2:
+```powershell
+# as Local User
+Start-Process -File notepad.exe -ArgumentList "$env:userprofile/.wslconfig"
+# --- .wslconfig ---
+# [wsl2]
+# memory=25GB
+# swap=25GB
+wsl --shutdown
+# as Local Administrator
+Restart-Service LxssManager
 ```
 
 ## NVIDIA GPU Driver and Utilities
@@ -177,30 +192,35 @@ FInally, you can `make install` the AI Chat Llama v2.
 
 ## References
 
-* Meta AI Llama v2 LLM Model:
-  * Llama v2 model code examples: 
-    * https://github.com/facebookresearch/llama.git
-  * Llama v2 pre-trained model download (e-mail with signed link):
-    * https://ai.meta.com/resources/models-and-libraries/llama-downloads/
-  * Llama v2 pre-trained models on Hugging Face: 
-    * For GPUs: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
-    * GPTQ Quantized: https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ
-    * GGML Quantized: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
-* HuggingFace:
-  * https://huggingface.co
-  * https://huggingface.co/docs/huggingface_hub/quick-start
-  * https://huggingface.co/docs/autotrain/index
-  * https://huggingface.co/blog/llama2
-  * 
-* GRadio:
-  * https://www.gradio.app/guides/quickstart
-  * https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
-* NVIDIA CUDA on Windows Subsystem for Linux v2 (aka WSL2):
-  * https://developer.nvidia.com/cuda/wsl
-  * https://developer.nvidia.com/cuda-downloads
-  * https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
-  * https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
-  * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
-  * https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
+### Meta AI Llama v2 LLM Model
+
+* Llama v2 model code examples: 
+  * https://github.com/facebookresearch/llama.git
+* Llama v2 pre-trained model download (e-mail with signed link):
+  * https://ai.meta.com/resources/models-and-libraries/llama-downloads/
+* Llama v2 pre-trained models on Hugging Face: 
+  * For GPUs: https://huggingface.co/meta-llama/Llama-2-7b-chat-hf
+  * GPTQ Quantized: https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ
+  * GGML Quantized: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
+
+### HuggingFace
+
+* https://huggingface.co
+* https://huggingface.co/docs/huggingface_hub/quick-start
+* https://huggingface.co/docs/autotrain/index
+* https://huggingface.co/blog/llama2
+
+### GRadio
+* https://www.gradio.app/guides/quickstart
+* https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
+
+### NVIDIA CUDA on Windows Subsystem for Linux v2 (aka WSL2):
+
+* https://developer.nvidia.com/cuda/wsl
+* https://developer.nvidia.com/cuda-downloads
+* https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
+* https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
+* https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
+* https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
 * NVIDIA CUDA for Ubuntu Linux on Baremetal:
-  * https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl
+* https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl

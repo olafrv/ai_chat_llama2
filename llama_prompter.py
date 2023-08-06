@@ -6,28 +6,30 @@
  and receive responses the model while preventing model monologues.
 """
 
-import os
 from threading import Thread
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from transformers import TextIteratorStreamer
-try:
-    from auto_gptq import AutoGPTQForCausalLM
-except ModuleNotFoundError:
-    print("Module 'auto_gptq' with CUDA extensions required for GPTQ models.")
-
-from llama_formatter import llama_formatter
 from huggingface_hub import hf_hub_download
 from huggingface_hub import login as hf_hub_login
 from llama_cpp import Llama  # type: ignore
-
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from peft import PeftModel
+# https://huggingface.co/docs/trl/main/en/installation
+from tmp.trl.trl import AutoModelForCausalLMWithValueHead
 try:
     import torch
     print("CUDA Available for Pytorch: " + str(torch.cuda.is_available()))
 except ModuleNotFoundError:
     print("module 'torch' is not installed or CUDA is not available.")
+try:
+    from auto_gptq import AutoGPTQForCausalLM
+except ModuleNotFoundError:
+    print("Module 'auto_gptq' with CUDA extensions required for GPTQ models.")
+
+from transformers import TextIteratorStreamer
+from llama_formatter import llama_formatter
 
 
 class llama_prompter:
+    timeout = 60*10  # seconds
     model_metadata = None
     model = None
     tokenizer = None
@@ -38,33 +40,34 @@ class llama_prompter:
         self.model_metadata = model_metadata
         self.formatter = llama_formatter()
 
-        path = model_metadata["path"] + "/" + model_metadata["name"]
-        if not os.path.exists(path):
-            os.makedirs(path)
-
-        filename = model_metadata["file"] \
-            if 'file' in model_metadata.keys() else "config.json"
-
-        if 'offline' not in model_metadata \
-                or model_metadata["offline"] is False:
+        if model_metadata["online"]:
+            print("Downloading the model...")
             hf_hub_login(token=huggingface_token)
             file_path = hf_hub_download(
-                repo_id=model_metadata["name"],
-                filename=filename,
-                cache_dir=path,
-                local_dir=path)
+                    repo_id=model_metadata["name"],
+                    filename=model_metadata["file"],
+                    local_dir=model_metadata["path"],
+                    local_dir_use_symlinks=False
+                )
+        else:
+            pass
 
+        # https://huggingface.co/docs/transformers/index
+        print("Loading the model...")
         if model_metadata["format"] == "ggml":
             self.model = Llama(file_path, n_ctx=2048)  # 4096
+            self.tokenizer = None
 
         elif model_metadata["format"] == "gptq":
             self.model = AutoGPTQForCausalLM.from_quantized(
-                        './models/olafrv/Llama-2-7b-chat-hf-trained', device_map="auto",
-                        use_safetensors=True, use_triton=False)
+                            model_metadata["name"],
+                            device_map="auto",
+                            use_safetensors=True,
+                            use_triton=False)
             self.tokenizer = AutoTokenizer.from_pretrained(
-                            './models/olafrv/Llama-2-7b-chat-hf-trained')
+                            model_metadata["name"])
 
-        else:
+        elif model_metadata["format"] == "original":
             self.model = AutoModelForCausalLM.from_pretrained(
                         model_metadata["name"],
                         device_map="auto",
@@ -72,6 +75,27 @@ class llama_prompter:
             self.tokenizer = AutoTokenizer.from_pretrained(
                             model_metadata["name"],
                             token=True)
+
+        elif model_metadata["format"] == "tlrsft":
+            # https://github.com/huggingface/peft/issues/774 !!!
+            self.model = AutoModelForCausalLMWithValueHead.from_pretrained(
+                            model_metadata["path"],
+                            device_map=None,
+                            offload_folder="offload/",
+                            token=True
+                        )
+
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                            model_metadata["path"],
+                            device_map=None,
+                            token=True)
+
+        if hasattr(self.model, 'device'):
+            print(f"MODEL_DEVICE: {self.model.device}")
+        else:
+            print("MODEL_DEVICE: Undefined")
+
+        print("Model loaded.")
 
     """ Get the current prompt text in llama v2 format """
     def get_prompt(self) -> str:
@@ -94,9 +118,13 @@ class llama_prompter:
             streamer = self.model(prompt=prompt, stream=True, **kwargs)
         else:
             streamer = TextIteratorStreamer(
-                self.tokenizer, skip_prompt=True, timeout=30)
-            inputs = self.tokenizer(
-                prompt, return_tensors="pt").to(self.model.device)
+                self.tokenizer, skip_prompt=True, timeout=self.timeout)
+            if self.model_metadata["format"] == "tlrsft":
+                inputs = self.tokenizer(
+                    prompt, return_tensors="pt")  # device_map = None
+            else:
+                inputs = self.tokenizer(
+                    prompt, return_tensors="pt").to(self.model.device)
             kwargs["max_new_tokens"] = 512
             kwargs["input_ids"] = inputs["input_ids"]
             kwargs["streamer"] = streamer

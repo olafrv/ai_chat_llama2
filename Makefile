@@ -13,15 +13,12 @@ IMAGE_APP_DIR="/opt/${REPOSITORY}"
 GITHUB_API="https://api.github.com/repos/${GITHUB_USER}/${REPOSITORY}"
 GITHUB_API_JSON:=$(shell printf '{"tag_name": "%s","target_commitish": "main","name": "%s","body": "Version %s","draft": false,"prerelease": false}' ${VERSION} ${VERSION} ${VERSION})
 CPUS=2
-PYTHON_VENV_DIR?="./venv"
+PYTHON_VENV_DIR?=./venv
 
 # CAUTION: sensitive environment variables!
-collect: 
-	@ echo "----------------------------"
-	@ env
-	@ echo "----------------------------"
-	@ python3 -m torch.utils.collect_env
-	@ echo "----------------------------"
+collect:
+	$(foreach v, $(filter-out .VARIABLES,$(.VARIABLES)), $(info $(v) = $($(v))))
+	python3 -m torch.utils.collect_env
 
 install: install.venv
 	@ . ${PYTHON_VENV_DIR}/bin/activate \
@@ -105,7 +102,7 @@ run:
 train:
 	@ mkdir -p datasets \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& python3 main_train.py \
+		&& python3 llama_train.py \
 		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
     		--model_name meta-llama/Llama-2-7b-chat-hf \
     		--dataset_name datasets/olafrv \

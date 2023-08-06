@@ -64,14 +64,23 @@ def main():
     assert model_index in range(0, len(MODELS_METADATA)), \
         f"Invalid model index: {model_index}"
     model_metadata = MODELS_METADATA[model_index]
-    print(f"Using model: {model_metadata['name']}")
+    print(f"MODEL_NAME: {model_metadata['name']}")
 
     # Set model store path
-    model_metadata["path"] = \
-        os.environ.get("AI_LLAMA2_CHAT_STORE") or "./models"
-    print(f"Store path: {model_metadata['path']}")
+    if ('path' not in model_metadata):
+        model_metadata["path"] = \
+            os.environ.get("AI_LLAMA2_CHAT_STORE") or "./models"
+    model_metadata["path"] += "/" + model_metadata["name"]
+    if not os.path.exists(model_metadata["path"]):
+        os.makedirs(model_metadata["path"])
+    print(f"MODEL_PATH: {model_metadata['path']}")
+
+    # Set model file name
+    if ('file' not in model_metadata):
+        model_metadata["file"] = "config.json"
 
     # Create model prompter
+    print("Initializing model prompter...")
     model_prompter = llama_prompter(model_metadata,
                                     os.environ.get("HUGGINGFACE_TOKEN"))
     # Start UI of Chatbot

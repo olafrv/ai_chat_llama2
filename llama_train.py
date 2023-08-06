@@ -1,3 +1,11 @@
+"""
+    Called from Makefile to train a model
+    using the data from datasets/olafrv/fmt/
+    References:
+    - https://huggingface.co/docs/trl/main/en/index
+    - ./trl/examples/scripts/sft_trainer.py
+"""
+
 from llama_formatter import llama_formatter
 
 
@@ -8,9 +16,6 @@ def main():
         output_filepath="datasets/olafrv/fmt/olaf-fmt.csv"
     )
 
-# Fix me!
-# To train the model in the hard way?
-# Instead of `make train` and HF library?
 
 if __name__ == "__main__":
     main()

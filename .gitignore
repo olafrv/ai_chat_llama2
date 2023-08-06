@@ -1,8 +1,8 @@
 # hugging face downloads
-models
+models/*
+!models/README.md
 # Temporal (e.g. install, test)
-AutoGPTQ
-trl
+tmp
 # python
 venv
 __pycache__
