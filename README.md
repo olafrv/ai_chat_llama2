@@ -19,16 +19,18 @@ make install  # If fails see NVIDIA section
 export AI_LLAMA2_CHAT_STORE=./models
 export HUGGINGFACE_TOKEN=***********
 # Llama v2 models will be downloaded (10-20 GiB / each)
-AI_LLAMA2_CHAT_MODEL=2 make run   
+make run MODEL_INDEX=2
 # Navigate in your browser to 127.0.0.1:7860
 ```
 
 ## Model Training (Draft)
 
+> **TODO:** Training passed but prompt require testing.
+
 Train the base LLAMA v2 original model with custom data set:
 
 ```bash
-make train
+make train.original  # meta-llama/Llama-2-7b-chat-hf
 ```
 
 I expect that in a couple of months we can use AutoTrain:
@@ -194,6 +196,7 @@ FInally, you can `make install` the AI Chat Llama v2.
 ### Meta AI Llama v2 LLM Model
 
 * Llama v2 model code examples: 
+  * https://huggingface.co/blog/llama2
   * https://github.com/facebookresearch/llama.git
 * Llama v2 pre-trained model download (e-mail with signed link):
   * https://ai.meta.com/resources/models-and-libraries/llama-downloads/
@@ -211,7 +214,6 @@ FInally, you can `make install` the AI Chat Llama v2.
 * https://huggingface.co
 * https://huggingface.co/docs/huggingface_hub/quick-start
 * https://huggingface.co/docs/autotrain/index
-* https://huggingface.co/blog/llama2
 
 ### GRadio
 * https://www.gradio.app/guides/quickstart

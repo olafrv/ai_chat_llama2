@@ -2,35 +2,28 @@
 [
     {
         # Poor: High mem footprint >20GB (GPU needed but still slow)
-        "format": "original",
+        "architecture": "original",
         "name": "meta-llama/Llama-2-7b-chat-hf",
         "online" : True
     },
     {
         # Medium/Good: Very fast and low mem footprint ~3GB (CPU/GPU)
-        "format": "ggml",
+        "architecture": "ggml",
         "name": "TheBloke/Llama-2-7B-Chat-GGML",  
         "file": "llama-2-7b-chat.ggmlv3.q4_K_M.bin",
         "online" : True
     },
     {
         # Best: Very low mem footprint and emojies! (GPU needed)
-        "format": "gptq",
+        "architecture": "gptq",
         "name": "TheBloke/Llama-2-7b-Chat-GPTQ",
         "online" : True 
     },
     {
         # Poorest: Highest mem footprint >32 GB RAM (GPU needed)
-        # This requires you to run 'make train' to generate it
-        "format": "tlrsft",
+        # This requires you to run 'make train.orig' to generate it
+        "architecture": "tlrsft",
         "name": "olafrv/Llama-2-7b-chat-hf-trained",
         "online": False
-    },
-    {
-        # ...
-        # This requires you to run 'make train' to generate it
-        "format": "tlrsft",
-        "name": "models/olafrv/Llama-2-7b-Chat-GPTQ-trained",
-        "online": False
-    },
+    }
 ]

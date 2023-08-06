@@ -8,6 +8,7 @@
 
 from threading import Thread
 from huggingface_hub import hf_hub_download
+from huggingface_hub import snapshot_download as hf_hub_snap_download
 from huggingface_hub import login as hf_hub_login
 from llama_cpp import Llama  # type: ignore
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -40,32 +41,38 @@ class llama_prompter:
 
         if model_metadata["online"]:
             print("Downloading the model...")
-            hf_hub_login(token=huggingface_token)
-            file_path = hf_hub_download(
+            if ('file' not in model_metadata):
+                hf_hub_login(token=huggingface_token)
+                hf_hub_snap_download(
+                    repo_id=model_metadata["name"],
+                    local_dir=model_metadata["path"],
+                    local_dir_use_symlinks=True
+                )
+            else:
+                file_path = hf_hub_download(
                     repo_id=model_metadata["name"],
                     filename=model_metadata["file"],
                     local_dir=model_metadata["path"],
-                    local_dir_use_symlinks=False
+                    local_dir_use_symlinks=True
                 )
         else:
             pass
 
         # https://huggingface.co/docs/transformers/index
         print("Loading the model...")
-        if model_metadata["format"] == "ggml":
+        if model_metadata["architecture"] == "ggml":
             self.model = Llama(file_path, n_ctx=2048)  # 4096
             self.tokenizer = None
 
-        elif model_metadata["format"] == "gptq":
+        elif model_metadata["architecture"] == "gptq":
             self.model = AutoGPTQForCausalLM.from_quantized(
                             model_metadata["name"],
                             device_map="auto",
-                            use_safetensors=True,
-                            use_triton=False)
+                            use_safetensors=True)
             self.tokenizer = AutoTokenizer.from_pretrained(
                             model_metadata["name"])
 
-        elif model_metadata["format"] == "original":
+        elif model_metadata["architecture"] == "original":
             self.model = AutoModelForCausalLM.from_pretrained(
                         model_metadata["name"],
                         device_map="auto",
@@ -74,8 +81,7 @@ class llama_prompter:
                             model_metadata["name"],
                             token=True)
 
-        elif model_metadata["format"] == "tlrsft":
-            # https://github.com/huggingface/peft/issues/774 !!!
+        elif model_metadata["architecture"] == "tlrsft":
             self.model = AutoModelForCausalLMWithValueHead.from_pretrained(
                             model_metadata["path"],
                             device_map=None,
@@ -85,7 +91,6 @@ class llama_prompter:
 
             self.tokenizer = AutoTokenizer.from_pretrained(
                             model_metadata["path"],
-                            device_map=None,
                             token=True)
 
         if hasattr(self.model, 'device'):
@@ -109,15 +114,17 @@ class llama_prompter:
     """ Submit a prompt to the model and return a streamer object """
     def submit(self, prompt: str):
         kwargs = dict(temperature=0.6, top_p=0.9)
-        if self.model_metadata["format"] == 'ggml':
+
+        if self.model_metadata["architecture"] == 'ggml':
             kwargs["max_tokens"] = 512
             # stream=False do not solve the broken emojies issue
             # https://github.com/abetlen/llama-cpp-python/issues/372
             streamer = self.model(prompt=prompt, stream=True, **kwargs)
+
         else:
             streamer = TextIteratorStreamer(
                 self.tokenizer, skip_prompt=True, timeout=self.timeout)
-            if self.model_metadata["format"] == "tlrsft":
+            if self.model_metadata["architecture"] == "tlrsft":
                 inputs = self.tokenizer(
                     prompt, return_tensors="pt")  # device_map = None
             else:

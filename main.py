@@ -1,7 +1,9 @@
 import os
 import yaml
 import gradio
+from time import sleep
 from llama_prompter import llama_prompter
+import argparse
 
 
 def ui(prompter: llama_prompter):
@@ -32,7 +34,7 @@ def ui(prompter: llama_prompter):
             print(f"PROMPTS_RAW: {prompter.formatter.prompts}")
             print(f"LAST_PROMPT: ---{prompt}---")
 
-            if prompter.model_metadata["format"] == 'ggml':
+            if prompter.model_metadata["architecture"] == 'ggml':
                 for chunk in prompter.submit(prompt):
                     token = chunk["choices"][0]["text"]
                     bloviated = prompter.check_history(token, history)
@@ -60,9 +62,24 @@ def main():
     # Set model metadata
     with open("./llama_models.yaml", "r") as f:
         MODELS_METADATA = yaml.safe_load(f)
-    model_index = int(os.environ.get("AI_LLAMA2_CHAT_MODEL"))
+
+    print("MODEL_INDEXES:")
+    for i, model_metadata in enumerate(MODELS_METADATA):
+        print(f"{i}: {model_metadata['architecture']}")
+
+    # Arguments
+    parser = argparse.ArgumentParser(
+                    prog='AI Llama2 Chatbot',
+                    description='Llama2 LLM Model Chatbot')
+    parser.add_argument('integers', metavar='MODEL_INDEX', type=int,
+                        help='model index')
+    parser.parse_args()
+
+    # Set model
+    model_index = int(os.sys.argv[1])
     assert model_index in range(0, len(MODELS_METADATA)), \
         f"Invalid model index: {model_index}"
+
     model_metadata = MODELS_METADATA[model_index]
     print(f"MODEL_NAME: {model_metadata['name']}")
 
@@ -74,10 +91,6 @@ def main():
     if not os.path.exists(model_metadata["path"]):
         os.makedirs(model_metadata["path"])
     print(f"MODEL_PATH: {model_metadata['path']}")
-
-    # Set model file name
-    if ('file' not in model_metadata):
-        model_metadata["file"] = "config.json"
 
     # Create model prompter
     print("Initializing model prompter...")

@@ -29,7 +29,8 @@ install.dev: install.venv
 	@ true \
 		&& sudo apt install -y patchelf ccache \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& pip3 install -Ur requirements-dev.txt
+		&& test ! -d requirements-dev.txt \
+		|| pip3 install -Ur requirements-dev.txt
 
 # customize!
 install.venv: install.base
@@ -84,29 +85,15 @@ build: install.dev
 
 # customize!
 run:
-	@ mkdir -p logs \
+	@mkdir -p logs \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& python3 main.py
-
-
-
-# References:
-# - https://huggingface.co/docs/trl/main/en/index
-# - https://huggingface.co/docs/trl/main/en/sft_trainer
-train.gptq: train.trl
-	@ python3 tmp/trl/examples/scripts/sft_trainer.py \
-		--model_name TheBloke/Llama-2-7b-Chat-GPTQ \
-		--dataset_name datasets/olafrv \
-		--output_dir models/olafrv/Llama-2-7b-Chat-GPTQ-trained \
-		--load_in_4bit \
-		--use_peft \
-		--batch_size 4 \
-		--gradient_accumulation_steps 2
+		&& echo "MODEL_INDEX=$(MODEL_INDEX)" \
+		&& python3 main.py $(MODEL_INDEX)
 
 # References:
 # - https://huggingface.co/docs/trl/main/en/index
 # - https://huggingface.co/docs/trl/main/en/sft_trainer
-train.orig: train.trl
+train.original: train.trl
 	@ python3 tmp/trl/examples/scripts/sft_trainer.py \
 		--model_name meta-llama/Llama-2-7b-chat-hf \
 		--dataset_name datasets/olafrv \
@@ -123,23 +110,24 @@ train.trl:
 		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl tmp/trl
 
 run.bin:
-	@ ./build/main.py.bin
+	./build/main.py.bin
 
 test:
 	# https://docs.pytest.org/
-	@ . ${PYTHON_VENV_DIR}/bin/activate \
+	test -d ${NAME}/tests
+	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& pytest -s -s --disable-warnings ${NAME}/tests/
 
 # customize!
 test.coverage:
 	# https://coverage.readthedocs.io
-	@ . ${PYTHON_VENV_DIR}/bin/activate \
+	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run main.py \
 		&& coverage report --show-missing ${NAME}/*.py
 
 # customize!
 test.coverage.report:
-	@ . ${PYTHON_VENV_DIR}/bin/activate \
+	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run -m pytest -s --disable-warnings ${NAME}/tests/ \
 		&& coverage report --show-missing ${NAME}/*.py
 
@@ -153,22 +141,26 @@ profile.view: install.dev
 	@ . ${PYTHON_VENV_DIR}/bin/activate && snakeviz profile/main.py.prof
 
 docker.build:
-	@ docker build -t ${IMAGE_NAME}:${VERSION} .
-	@ docker tag ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:latest 
+	test -d Dockerfile
+	docker build -t ${IMAGE_NAME}:${VERSION} .
+	docker tag ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:latest 
 
 docker.clean:
-	@ docker images | grep ${IMAGE_NAME} | awk '{print $$1":"$$2}' | sort | xargs --no-run-if-empty -n1 docker image rm
+	test -d Dockerfile
+	docker images | grep ${IMAGE_NAME} | awk '{print $$1":"$$2}' | sort | xargs --no-run-if-empty -n1 docker image rm
 
 # customize!
 docker.run:
-	@ docker run --rm --cpus ${CPUS} \
+	test -d Dockerfile
+	docker run --rm --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \
     	-v "${PWD}/logs:${IMAGE_APP_DIR}/logs" \
 		${IMAGE_NAME}:${VERSION}
 
 # customize!
 docker.exec:
-	@ docker run --rm -it --cpus ${CPUS} \
+	test -d Dockerfile
+	docker run --rm -it --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \
     	-v "${PWD}/logs:${IMAGE_APP_DIR}/logs" \
 		--entrypoint /bin/bash ${IMAGE_NAME}:${VERSION}
@@ -178,8 +170,8 @@ github.push: docker.build
 	# https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 	# https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
 	echo ${GITHUB_TOKEN} | docker login ghcr.io --username ${GITHUB_USER} --password-stdin
-	@ docker push ${IMAGE_NAME}:${VERSION}
-	@ docker push ${IMAGE_NAME}:latest
+	docker push ${IMAGE_NAME}:${VERSION}
+	docker push ${IMAGE_NAME}:latest
 
 github.release: github.push
 	# Fail if uncommited changes
