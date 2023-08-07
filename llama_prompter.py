@@ -33,6 +33,7 @@ class llama_prompter:
     model = None
     tokenizer = None
     formatter = None
+    thread = None
 
     """ Initialize the model and tokenizer from metadata specifications """
     def __init__(self, model_metadata: dict, huggingface_token: str):
@@ -134,8 +135,8 @@ class llama_prompter:
             kwargs["input_ids"] = inputs["input_ids"]
             kwargs["streamer"] = streamer
 
-            thread = Thread(target=self.model.generate, kwargs=kwargs)
-            thread.start()
+            self.thread = Thread(target=self.model.generate, kwargs=kwargs)
+            self.thread.start()
         return streamer
 
     """ Prevent model monologues by checking the chat history"""

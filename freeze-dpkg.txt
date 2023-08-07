@@ -3,6 +3,7 @@ Desired=Unknown/Install/Remove/Purge/Hold
 |/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
 ||/ Name                            Version                                 Architecture Description
 +++-===============================-=======================================-============-================================================================================
+ii  1password-cli                   2.19.0-4                                amd64        The official 1Password command-line tool.
 ii  adduser                         3.118ubuntu5                            all          add and remove users and groups
 ii  adwaita-icon-theme              41.0-1ubuntu1                           all          default icon theme of GNOME (small subset)
 ii  alsa-topology-conf              1.2.5.1-2                               all          ALSA topology configuration files
@@ -17,6 +18,7 @@ ii  base-files                      12ubuntu4.3                             amd6
 ii  base-passwd                     3.5.52build1                            amd64        Debian base system master password and group files
 ii  bash                            5.1-6ubuntu1                            amd64        GNU Bourne Again SHell
 ii  bash-completion                 1:2.11-5ubuntu1                         all          programmable completion for the bash shell
+ii  bc                              1.07.1-3build1                          amd64        GNU bc arbitrary precision calculator language
 ii  bind9-dnsutils                  1:9.18.12-0ubuntu0.22.04.2              amd64        Clients provided with BIND 9
 ii  bind9-host                      1:9.18.12-0ubuntu0.22.04.2              amd64        DNS Lookup Utility
 ii  bind9-libs:amd64                1:9.18.12-0ubuntu0.22.04.2              amd64        Shared Libraries used by BIND 9
@@ -31,6 +33,7 @@ ii  byobu                           5.133-1                                 all 
 ii  bzip2                           1.0.8-5build1                           amd64        high-quality block-sorting file compressor - utilities
 ii  ca-certificates                 20230311ubuntu0.22.04.1                 all          Common CA certificates
 ii  ca-certificates-java            20190909ubuntu1.2                       all          Common CA certificates (JKS keystore)
+ii  ccache                          4.5.1-1                                 amd64        Compiler cache for fast recompilation of C/C++ code
 ii  command-not-found               22.04.0                                 all          Suggest installation of packages in interactive bash sessions
 ii  console-setup                   1.205ubuntu3                            all          console font and keymap setup program
 ii  console-setup-linux             1.205ubuntu3                            all          Linux specific part of console-setup
@@ -324,6 +327,7 @@ ii  libgtk-3-bin                    3.24.33-1ubuntu2                        amd6
 ii  libgtk-3-common                 3.24.33-1ubuntu2                        all          common files for the GTK graphical user interface library
 ii  libgtkd-3-0:amd64               3.10.0-1ubuntu1                         amd64        GTK+ graphical user interface library - D bindings
 ii  libharfbuzz0b:amd64             2.7.4-1ubuntu3.1                        amd64        OpenType text shaping engine (shared library)
+ii  libhiredis0.14:amd64            0.14.1-2                                amd64        minimalistic C client library for Redis
 ii  libhogweed6:amd64               3.7.3-1build2                           amd64        low level cryptographic library (public-key cryptos)
 ii  libhtml-form-perl               6.07-1                                  all          module that represents an HTML form element
 ii  libhtml-format-perl             2.12-1.1                                all          module for transforming HTML into various formats
@@ -479,6 +483,7 @@ ii  libsodium23:amd64               1.0.18-1build2                          amd6
 ii  libsqlite3-0:amd64              3.37.2-2ubuntu0.1                       amd64        SQLite 3 shared library
 ii  libss2:amd64                    1.46.5-2ubuntu1.1                       amd64        command-line interface parsing library
 ii  libssh-4:amd64                  0.9.6-2ubuntu0.22.04.1                  amd64        tiny C SSH library (OpenSSL flavor)
+ii  libssh2-1:amd64                 1.10.0-3                                amd64        SSH2 client-side library
 ii  libssl-dev:amd64                3.0.2-0ubuntu1.10                       amd64        Secure Sockets Layer toolkit - development files
 ii  libssl3:amd64                   3.0.2-0ubuntu1.10                       amd64        Secure Sockets Layer toolkit - shared libraries
 ii  libstdc++-11-dev:amd64          11.4.0-1ubuntu1~22.04                   amd64        GNU Standard C++ Library v3 (development files)
@@ -591,13 +596,17 @@ ii  lsb-release                     11.1.0ubuntu4                           all 
 ii  lshw                            02.19.git.2021.06.19.996aaad9c7-2build1 amd64        information about hardware configuration
 ii  lsof                            4.93.2+dfsg-1.1build2                   amd64        utility to list open files
 ii  lto-disabled-list               24                                      all          list of packages not to build with LTO
+ii  mailcap                         3.70+nmu1ubuntu1                        all          Debian's mailcap system, and support programs
 ii  make                            4.3-4.1build1                           amd64        utility for directing compilation
 ii  man-db                          2.10.2-1                                amd64        tools for reading manual pages
 ii  manpages                        5.10-1ubuntu1                           all          Manual pages about using a GNU/Linux system
 ii  manpages-dev                    5.10-1ubuntu1                           all          Manual pages about using GNU/Linux for development
 ii  mawk                            1.3.4.20200120-3                        amd64        Pattern scanning and text processing language
+ii  mc                              3:4.8.27-1                              amd64        Midnight Commander - a powerful file manager
+ii  mc-data                         3:4.8.27-1                              all          Midnight Commander - a powerful file manager -- data files
 ii  media-types                     7.0.0                                   all          List of standard media types and their usual file extension
 ii  mesa-vulkan-drivers:amd64       23.0.4-0ubuntu1~22.04.1                 amd64        Mesa Vulkan graphics drivers
+ii  mime-support                    3.66                                    all          transitional package
 ii  motd-news-config                12ubuntu4.3                             all          Configuration for motd-news shipped in base-files
 ii  mount                           2.37.2-4ubuntu3                         amd64        tools for mounting and manipulating filesystems
 ii  mtr-tiny                        0.95-1                                  amd64        Full screen ncurses traceroute tool
@@ -629,6 +638,7 @@ ii  parted                          3.4-2build1                             amd6
 ii  passwd                          1:4.8.1-2ubuntu2.1                      amd64        change and administer password and group data
 ii  pastebinit                      1.5.1-1ubuntu1                          all          command-line pastebin client
 ii  patch                           2.7.6-7build2                           amd64        Apply a diff file to an original
+ii  patchelf                        0.14.3-1                                amd64        modify properties of ELF executables
 ii  pci.ids                         0.0~2022.01.22-1                        all          PCI ID Repository
 ii  pciutils                        1:3.7.0-6                               amd64        PCI utilities
 ii  perl                            5.34.0-3ubuntu1.2                       amd64        Larry Wall's Practical Extraction and Report Language
@@ -740,6 +750,7 @@ ii  ucf                             3.0043                                  all 
 ii  udev                            249.11-0ubuntu3.9                       amd64        /dev/ and hotplug management daemon
 ii  ufw                             0.36.1-4ubuntu0.1                       all          program for managing a Netfilter firewall
 ii  unattended-upgrades             2.8ubuntu1                              all          automatic installation of security upgrades
+ii  unzip                           6.0-26ubuntu3.1                         amd64        De-archiver for .zip files
 ii  update-manager-core             1:22.04.10                              all          manage release upgrades
 ii  update-motd                     3.10                                    all          complements pam_motd in libpam-modules
 ii  usb.ids                         2022.04.02-1                            all          USB ID Repository

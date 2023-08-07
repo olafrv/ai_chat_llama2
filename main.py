@@ -3,6 +3,7 @@ import yaml
 import gradio
 from llama_prompter import llama_prompter
 import argparse
+import signal
 
 
 def ui(prompter: llama_prompter):
@@ -66,16 +67,20 @@ def main():
     for i, model_metadata in enumerate(MODELS_METADATA):
         print(f"{i}: {model_metadata['architecture']}")
 
-    # Arguments
-    parser = argparse.ArgumentParser(
-                    prog='AI Llama2 Chatbot',
-                    description='Llama2 LLM Model Chatbot')
-    parser.add_argument('integers', metavar='MODEL_INDEX', type=int,
-                        help='model index')
-    parser.parse_args()
+    if (os.environ.get("MODEL_INDEX")):
+        # Environment variable
+        model_index = int(os.environ.get("MODEL_INDEX"))
+    else:
+        # Arguments
+        parser = argparse.ArgumentParser(
+                        prog='AI Llama2 Chatbot',
+                        description='Llama2 LLM Model Chatbot')
+        parser.add_argument('integers', metavar='MODEL_INDEX', type=int,
+                            help='model index')
+        parser.parse_args()
+        model_index = int(os.sys.argv[1])
 
     # Set model
-    model_index = int(os.sys.argv[1])
     assert model_index in range(0, len(MODELS_METADATA)), \
         f"Invalid model index: {model_index}"
 
@@ -85,7 +90,7 @@ def main():
     # Set model store path
     if ('path' not in model_metadata):
         model_metadata["path"] = \
-            os.environ.get("AI_LLAMA2_CHAT_STORE") or "./models"
+            os.environ.get("MODEL_STORE") or "./models"
     model_metadata["path"] += "/" + model_metadata["name"]
     if not os.path.exists(model_metadata["path"]):
         os.makedirs(model_metadata["path"])
@@ -95,9 +100,23 @@ def main():
     print("Initializing model prompter...")
     model_prompter = llama_prompter(model_metadata,
                                     os.environ.get("HUGGINGFACE_TOKEN"))
+
+    def handler(signum, frame):
+        if signum == signal.SIGINT:
+            print("CTRL+C or 'kill -2' detected!")
+            if model_prompter.thread is not None:
+                model_prompter.thread.join()
+            os._exit(0)
+
+    signal.signal(signal.SIGINT, handler)
+
     # Start UI of Chatbot
     ui(model_prompter)
 
 
+"""
+ Parameters:
+  - MODEL_INDEX(int): Passed as environment variable or argument
+"""
 if __name__ == '__main__':
     main()

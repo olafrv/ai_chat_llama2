@@ -9,7 +9,7 @@ anyio==3.7.1
 arrow==1.2.3
 async-timeout==4.0.2
 attrs==23.1.0
-auto-gptq @ file:///home/ubuntu/code/ai_chat_llama2/AutoGPTQ
+auto-gptq @ file:///home/ubuntu/code/ai_chat_llama2/tmp/AutoGPTQ
 autotrain-advanced @ git+https://github.com/huggingface/autotrain-advanced.git@72463c479d0c236aee35cd74d08e828deb6d0f11
 bitsandbytes==0.41.1
 blinker==1.4
@@ -21,6 +21,7 @@ cmake==3.27.0
 codecarbon==2.2.3
 command-not-found==0.3
 contourpy==1.1.0
+coverage==7.2.7
 cryptography==3.4.8
 cycler==0.11.0
 datasets @ git+https://github.com/huggingface/datasets.git@ef17d9fd6c648bb41d43ba301c3de4d7b6f833d8
@@ -36,6 +37,7 @@ exceptiongroup==1.1.2
 fastapi==0.101.0
 ffmpy==0.3.1
 filelock==3.12.2
+flake8==6.1.0
 fonttools==4.42.0
 frozenlist==1.4.0
 fsspec==2023.6.0
@@ -53,6 +55,7 @@ huggingface-hub @ git+https://github.com/huggingface/huggingface_hub@37a5eaa8264
 idna==3.4
 imageio==2.31.1
 importlib-metadata==4.6.4
+iniconfig==2.0.0
 invisible-watermark==0.2.0
 iotop==0.6
 ipadic==1.0.0
@@ -76,6 +79,7 @@ Markdown==3.4.4
 markdown-it-py==2.2.0
 MarkupSafe==2.1.3
 matplotlib==3.7.2
+mccabe==0.7.0
 mdit-py-plugins==0.3.3
 mdurl==0.1.2
 more-itertools==8.10.0
@@ -84,6 +88,7 @@ multidict==6.0.4
 multiprocess==0.70.15
 netifaces==0.11.0
 networkx==3.1
+Nuitka==1.7.9
 numpy==1.25.2
 nvidia-cublas-cu11==11.10.3.66
 nvidia-cuda-cupti-cu11==11.7.101
@@ -99,23 +104,28 @@ nvidia-nvtx-cu11==11.7.91
 oauthlib==3.2.0
 opencv-python==4.8.0.74
 opencv-python-headless==4.8.0.74
+ordered-set==4.1.0
 orjson==3.9.2
 packaging==23.1
 pandas==2.0.3
 peft @ git+https://github.com/huggingface/peft.git@ec267c644a9a9f05a7340a7cb23ed5a6a6090dd0
 Pillow==10.0.0
+pluggy==1.2.0
 protobuf==4.23.4
 psutil==5.9.5
 py-cpuinfo==9.0.0
 pyarrow==12.0.1
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
+pycodestyle==2.11.0
 pydantic==1.10.11
 pydub==0.25.1
+pyflakes==3.1.0
 PyGObject==3.42.1
 PyJWT==2.3.0
 pynvml==11.5.0
 pyparsing==2.4.7
+pytest==7.4.0
 python-apt==2.4.0+ubuntu1
 python-dateutil==2.8.2
 python-multipart==0.0.6
@@ -141,6 +151,7 @@ SecretStorage==3.3.1
 semantic-version==2.10.0
 sentencepiece==0.1.99
 six==1.16.0
+snakeviz==2.2.0
 sniffio==1.3.0
 ssh-import-id==5.11
 starlette==0.27.0
@@ -152,8 +163,10 @@ threadpoolctl==3.2.0
 tifffile==2023.7.18
 tiktoken==0.4.0
 tokenizers==0.13.3
+tomli==2.0.1
 toolz==0.12.0
 torch==2.0.1
+tornado==6.3.2
 tqdm==4.65.0
 transformers @ git+https://github.com/huggingface/transformers.git@a6e6b1c622d8d08e2510a82cb6266d7b654f1cbf
 triton==2.0.0
@@ -172,3 +185,4 @@ Werkzeug==2.3.6
 xxhash==3.3.0
 yarl==1.9.2
 zipp==1.0.0
+zstandard==0.21.0

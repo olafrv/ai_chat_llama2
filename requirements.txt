@@ -14,7 +14,7 @@ gradio==3.39.0
 # llama-cpp-python==0.1.77, installed 'make install' in the root folder
 # https://github.com/oobabooga/text-generation-webui/issues/1534
 
-# auto-gptq-0.3.2+cu117, installed following the README.md NVIDIA section
+# auto-gptq-0.3.2+cu117, installed 'make install' in the root folder
 # auto-gptq @ file:///home/ubuntu/code/ai_chat_llama2/AutoGPTQ
 
 # The version pinning is because of google-auth requirement conflict

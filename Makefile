@@ -1,10 +1,5 @@
 #!/usr/bin/make
 
-# Environment Variables
-# - GITHUB_USER
-# - GITHUB_TOKEN
-# - PYTHON_VENV_DIR
-
 NAME=$(shell cat METADATA | grep NAME | cut -d"=" -f2)
 VERSION:=$(shell cat METADATA | grep VERSION | cut -d"=" -f2)
 REPOSITORY="${NAME}"
@@ -15,29 +10,37 @@ GITHUB_API_JSON:=$(shell printf '{"tag_name": "%s","target_commitish": "main","n
 CPUS=2
 PYTHON_VENV_DIR?=./venv
 
-# CAUTION: sensitive environment variables!
-collect:
-	$(foreach v, $(filter-out .VARIABLES,$(.VARIABLES)), $(info $(v) = $($(v))))
-	python3 -m torch.utils.collect_env
+.PHONY: help collect freeze install install-dev install-venv install-base uninstall uninstall-venv clean check-config build run train-original
 
-install: install.venv
+help:
+	@echo 'ENVIRONMENT: ## GITHUB_USER, GITHUB_TOKEN' | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
+	@echo ': ## PYTHON_VENV_DIR' | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
+	@grep -E '^[\.a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
+
+collect:	## Collect and shows environment (sensitive values!)
+	$(foreach v, $(filter-out .VARIABLES,$(.VARIABLES)), $(info $(v) = $($(v))))
+	@ python3 -m torch.utils.collect_env
+
+freeze:		## Save dpkg and pip freeze to freeze-*.txt
+	dpkg-query --list > freeze-dpkg.txt
+	pip3 freeze > freeze-pip.txt
+
+install: install-venv	## Install dependencies for production
 	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& pip3 install -Ur requirements.txt
 
 # customize!
-install.dev: install.venv
+install-dev: install-venv	## Install dependencies for development
 	@ true \
 		&& sudo apt install -y patchelf ccache \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& test ! -d requirements-dev.txt \
-		|| pip3 install -Ur requirements-dev.txt
+		&& pip3 install -Ur requirements-dev.txt
 
 # customize!
-install.venv: install.base
+install-venv: install-base	## Install base Linux packages and python
 	@ true \
 		&& sudo apt install -y zlib1g-dev libjpeg-dev libpq-dev git-lfs \
-		&& test -d ${PYTHON_VENV_DIR} \
-		|| python3 -m venv ${PYTHON_VENV_DIR} \
+		&& test -d ${PYTHON_VENV_DIR} || python3 -m venv ${PYTHON_VENV_DIR} \
 		&& . ${PYTHON_VENV_DIR}/bin/activate \
     	&& pip3 install --upgrade pip \
 		&& pip3 install -Ur requirements.txt \
@@ -46,55 +49,58 @@ install.venv: install.base
 		&& test -d tmp/AutoGPTQ || git clone https://github.com/PanQiWei/AutoGPTQ.git tmp/AutoGPTQ \
 		&& cd tmp/AutoGPTQ && BUILD_CUDA_EXT=1 pip3 install .
 
-install.base:
-	@ sudo apt update \
+install-base:	## Install base Linux packages and python
+	@ true \
+		&& sudo apt update \
 		&& sudo apt install -y python3 \
     	&& sudo apt install -y python3.10-venv python3-dev python3-setuptools \
     	&& sudo apt install -y --no-install-recommends build-essential gcc \
     	&& sudo apt install -y python3-pip \
 		&& sudo apt clean
 
-uninstall: uninstall.venv clean
+uninstall: clean-venv clean	## Uninstall virtual environment and clean build files
+	@ true
 
-uninstall.venv: 
-	#pip3 list --user --format=freeze | sed 's/=.*$//' | xargs pip3 uninstall --yes
-	#@ test ! -d env \
-	#	|| . ${PYTHON_VENV_DIR}/bin/activate \
-	#	&& pip3 uninstall --yes -r requirements.txt \
-	#	&& pip3 uninstall --yes -r requirements-dev.txt
-	rm -rf ${PYTHON_VENV_DIR}
+clean:	## Delete build/ and logs/ folders
+	@ rm -rf build
 
 # customize!
-clean:
-	@ rm -rf build logs
+clean-venv:	## Delete virtual environment and its related folders
+	rm -rf __pycache__ logs offload tmp "${PYTHON_VENV_DIR}"
 
 # customize!
-check-config:
+check-config:	## Check configuration
 	@ . ${PYTHON_VENV_DIR}/bin/activate \
 		&& python3 main.py --check-config
 
-build: install.dev
-	# https://nuitka.net/doc/user-manual.html
-	# https://nuitka.net/info/debian-dist-packages.html (Work in ubuntu!)
-	# python3 -m nuitka --standalone --onefile --enable-plugin=numpy -o ${NAME}.bin main.py
+# customize!
+# https://nuitka.net/doc/user-manual.html
+# https://nuitka.net/info/debian-dist-packages.html (Works in Ubuntu!)
+# python3 -m nuitka --standalone --onefile --enable-plugin=numpy -o ${NAME}.bin main.py
+# python3 -m nuitka --include-package=${NAME} --output-dir=./build --show-progress --report=./build/main.py.xml -j6 main.py
+build:	## Build binary (main.bin)
 	@ . ${PYTHON_VENV_DIR}/bin/activate \
-		&& python3 -m nuitka --include-package=${NAME} --output-dir=./build \
+		&& mkdir -p build \
+		&& python3 -m nuitka --output-dir=./build \
 			--show-progress --report=./build/main.py.xml -j6 \
-			main.py
-	@ chmod +x build/main.py.bin
+			main.py \
+		&& chmod +x build/main.bin
 
 # customize!
-run:
-	@mkdir -p logs \
-		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& echo "MODEL_INDEX=$(MODEL_INDEX)" \
-		&& python3 main.py $(MODEL_INDEX)
-
+run:	## Run the python application in virtual environment
+	@ . ${PYTHON_VENV_DIR}/bin/activate \
+		&& mkdir -p logs \
+		&& python3 main.py
+		
 # References:
 # - https://huggingface.co/docs/trl/main/en/index
 # - https://huggingface.co/docs/trl/main/en/sft_trainer
-train.original: train.trl
-	@ python3 tmp/trl/examples/scripts/sft_trainer.py \
+train-original: train-trl	## Train 'original' model (install TRL dependencies)
+	. ${PYTHON_VENV_DIR}/bin/activate \
+		&& mkdir -p datasets \
+		&& python3 dataset_format.py \
+		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl tmp/trl \
+		&& python3 tmp/trl/examples/scripts/sft_trainer.py \
 		--model_name meta-llama/Llama-2-7b-chat-hf \
 		--dataset_name datasets/olafrv \
 		--output_dir models/olafrv/Llama-2-7b-chat-hf-trained \
@@ -103,54 +109,51 @@ train.original: train.trl
 		--batch_size 4 \
 		--gradient_accumulation_steps 2
 
-train.trl:
-	@ mkdir -p datasets \
-		&& . ${PYTHON_VENV_DIR}/bin/activate \
-		&& python3 dataset_format.py \
-		&& test -d tmp/trl || git clone https://github.com/lvwerra/trl tmp/trl
+# customize!
+run-bin:	## Run compiled binary (main.bin)
+	PYTHONPATH=. ./build/main.bin
 
-run.bin:
-	./build/main.py.bin
-
-test:
-	# https://docs.pytest.org/
-	test -d ${NAME}/tests
+# customize!
+# https://docs.pytest.org/
+test:	## Run tests (if any on tests/ directory)
 	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& pytest -s -s --disable-warnings ${NAME}/tests/
 
 # customize!
-test.coverage:
-	# https://coverage.readthedocs.io
+# https://coverage.readthedocs.io
+coverage-code:	## Runs code's coverage and generates report HTML report
 	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run main.py \
-		&& coverage report --show-missing ${NAME}/*.py
+		&& coverage report --show-missing *.py
 
 # customize!
-test.coverage.report:
+# https://coverage.readthedocs.io
+coverage-test:	## Runs test's coverage and generates HTML report
 	. ${PYTHON_VENV_DIR}/bin/activate \
 		&& coverage run -m pytest -s --disable-warnings ${NAME}/tests/ \
 		&& coverage report --show-missing ${NAME}/*.py
 
-profile: install.dev
-	# https://docs.python.org/3/library/profile.html
-	@ mkdir -p profile \
-		&& . ${PYTHON_VENV_DIR}/bin/activate \
+# https://docs.python.org/3/library/profile.html
+profile:	## Run profiler on main.py
+	. ${PYTHON_VENV_DIR}/bin/activate \
+		&& mkdir -p profile \
 		&& python3 -m cProfile -o profile/main.py.prof main.py
 
-profile.view: install.dev
-	@ . ${PYTHON_VENV_DIR}/bin/activate && snakeviz profile/main.py.prof
+profile-view:	## View profiler results with snakeviz
+	. ${PYTHON_VENV_DIR}/bin/activate \
+		&& snakeviz profile/main.py.prof
 
-docker.build:
+docker-build:	## Build docker image from Dockerfile
 	test -d Dockerfile
 	docker build -t ${IMAGE_NAME}:${VERSION} .
 	docker tag ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:latest 
 
-docker.clean:
+docker-clean:	## Delete docker image
 	test -d Dockerfile
 	docker images | grep ${IMAGE_NAME} | awk '{print $$1":"$$2}' | sort | xargs --no-run-if-empty -n1 docker image rm
 
 # customize!
-docker.run:
+docker-run:		## Run docker image
 	test -d Dockerfile
 	docker run --rm --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \
@@ -158,14 +161,14 @@ docker.run:
 		${IMAGE_NAME}:${VERSION}
 
 # customize!
-docker.exec:
+docker-exec:	## Executes /bin/bash inside docker image
 	test -d Dockerfile
 	docker run --rm -it --cpus ${CPUS} \
 		-v "${PWD}/config.yaml:${IMAGE_APP_DIR}/config.yaml:ro" \
     	-v "${PWD}/logs:${IMAGE_APP_DIR}/logs" \
 		--entrypoint /bin/bash ${IMAGE_NAME}:${VERSION}
 
-github.push: docker.build
+github-push: docker-build	## Push docker image to github
 	# https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
 	# https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 	# https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
@@ -173,7 +176,7 @@ github.push: docker.build
 	docker push ${IMAGE_NAME}:${VERSION}
 	docker push ${IMAGE_NAME}:latest
 
-github.release: github.push
+github-release: github-push	## Create github release
 	# Fail if uncommited changes
 	git diff --exit-code
 	git diff --cached --exit-code

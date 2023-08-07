@@ -1,13 +1,13 @@
 # AI Chat Llama2
 
 ChatBot using [Meta AI Llama v2 LLM models](https://ai.meta.com/llama/) 
-on your local PC (some without GPU but a bit slow).
+on your local PC (some without GPU but a bit slow if not enough RAM).
 
 <a href="ai_chat_llama2.png"><img src="ai_chat_llama2.png"></a> 
 
 ## ChatBot Usage
 
-> The best model is the N=2 GPTQ [Quantized](https://huggingface.co/docs/optimum/concept_guides/quantization) require GPU, see [llama_models.yaml](llama_models.yaml).
+> The best model is the GPTQ [Quantized](https://huggingface.co/docs/optimum/concept_guides/quantization) but requires GPU, see [llama_models.yaml](llama_models.yaml).
 
 > Register at https://huggingface.co to get a token, ask for download access to the models, and [later train them with Autotrain](https://huggingface.co/docs/autotrain/index)
 
@@ -15,11 +15,12 @@ on your local PC (some without GPU but a bit slow).
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
 sudo apt install make
+# make help
 make install  # If fails see NVIDIA section below
-export AI_LLAMA2_CHAT_STORE=./models
+# export MODEL_STORE=./models
 export HUGGINGFACE_TOKEN=***********
 # Llama v2 models will be downloaded (10-20 GiB / each)
-make run MODEL_INDEX=2
+make run MODEL_INDEX=2 # gptq
 # Navigate in your browser to 127.0.0.1:7860
 ```
 
@@ -30,7 +31,7 @@ make run MODEL_INDEX=2
 Train the base LLAMA v2 original model with custom data set:
 
 ```bash
-make train.original  # meta-llama/Llama-2-7b-chat-hf
+make train-original  # meta-llama/Llama-2-7b-chat-hf
 ```
 
 I expect that in a couple of months we can use AutoTrain:
@@ -53,45 +54,53 @@ I expect that in a couple of months we can use AutoTrain:
 
 To increase the RAM and SWAP memory on Windows Subsystem for Linux v2:
 ```powershell
-# as Local User
+# https://learn.microsoft.com/en-us/windows/wsl/wsl-config
+
+# As Local User
 Start-Process -File notepad.exe -ArgumentList "$env:userprofile/.wslconfig"
-# --- .wslconfig ---
+
+# Content of .wslconfig:
 # [wsl2]
 # memory=25GB
 # swap=25GB
+
+# Stop the VM
 wsl --shutdown
-# as Local Administrator
+
+# As Local Administrator
 Restart-Service LxssManager
 ```
 
 ## NVIDIA GPU Driver and Utilities
 
+### The Hardware
+
 I will describe here the hard way of getting NVIDIA drivers,
 pytorch, AutoGPTQ, urllib3 and many other stuff to work under
-Windows Subsystem for Linux v2 where I was running tests.
-But definitely, on bare metal or ML cloud intances is easier.
+Windows Subsystem for Linux v2, where I was running tests.
+But on bare metal or ML/GPU cloud intances gets easier.
 
-My hardware was an ASUS RogStrix laptop with:
+My hardware was an ASUS ROG Strix G713RW laptop with:
 
 * AMD Ryzen 9 6900HX 32GB DDR5 with Radeon Graphics.
 * NVIDIA GeForce RTX 3070 Ti 8GB GDDR6 Laptop Edition. 
 
 The complications are:
 
-* Host OS Windows 11 Pro 64 bits (AMD).
+* Host OS Windows 11 Pro 64 bits (AMD):
   * Windows Virtulization Platform + WSL features enabled.
   * Device Security -> Core Isolation -> Memory Integraty -> Off.
   * NVIDIA Driver Version 536.67 supports Direct 3D 12.1.
-* Guest Operating System Ubuntu 22.04 x86-64 (not AMD-64).
+* Guest Operating System Ubuntu 22.04 x86-64 (not AMD-64):
   * CUDA Driver Version = 12.2 (Provided by default by Windows).
   * CUDA Runtime Version = 11.8 (required for pip3 wheels builds).
   * As of Jul/2023 PyTorch do not support CUDA Driver 12.2.
 
-Before running `make install` of AI Chat Llama 2, and only 
-if your are going to use GPU power, the this has to be
-configured manually (I'm too lazy to Makify it).
+Before running `make install` of AI Chat Llama v2, and only 
+if your are going to use GPU power, then this has to be
+configured manually (I'm too lazy to *Makify* it).
 
-Here the steps by steps on the Linux Guest (Comments are optional).
+### Pre-flight checks on the Linux Guest.
 
 Check first what is already built-in in the WSL Linux image:
 
@@ -99,7 +108,7 @@ Check first what is already built-in in the WSL Linux image:
 nvidia-smi
 ```
 
-Output should be like this (without the processes, I was running the Chatbot):
+Output should be like this (python3.10 is the running the Chatbot):
 ```bash
 Sat Aug  5 19:36:05 2023       
 +---------------------------------------------------------------------------------------+
@@ -227,6 +236,4 @@ FInally, you can `make install` the AI Chat Llama v2.
 * https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
 * https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
 * https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
-
-### NVIDIA CUDA for Ubuntu Linux on Baremetal:
-* https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#wsl
+* https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html

@@ -1,4 +1,7 @@
 [flake8]
+# VSCode => linting with Flake8 extension.
+# GitHub Action => linintg with flake8 action.
+# Locally flake8 defined in 'requirements-dev.txt'.
 # https://www.flake8rules.com/rules/F403.html
 # https://www.flake8rules.com/rules/F405.html
 # https://www.flake8rules.com/rules/E501.html

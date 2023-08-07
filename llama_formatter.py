@@ -1,5 +1,10 @@
 """
- This class transform the chat history into a prompt for llama model
+ File: llama_formatter.py
+
+ Transform the chat history into a prompt for llama model.
+ Also provides a method to convert CSV files into llama format.
+
+ References:
  * https://github.com/facebookresearch/llama/tree/main
  * https://github.com/facebookresearch/llama/blob/main/llama/generation.py
  * https://github.com/facebookresearch/llama/blob/main/llama/tokenizer.py
