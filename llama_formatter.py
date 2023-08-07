@@ -43,7 +43,7 @@ class llama_formatter:
                 writer.writeheader()
                 for row in reader:
                     # Do not remove trailing spaces it can break the model
-                    text = f"{self.BOS}{self.B_INST} {row['instruction'].strip()} {self.E_INST}"
+                    text = f"{self.BOS}{self.B_INST} {row['instruction'].strip()} {self.E_INST}"  # noqa: E501
                     text += f" {row['output'].strip()}{self.EOS}"
                     writer.writerow({
                         "instruction": row["instruction"],
