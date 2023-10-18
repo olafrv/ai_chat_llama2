@@ -19,5 +19,5 @@ gradio==3.39.0
 
 # The version pinning is because of google-auth requirement conflict
 # https://stackoverflow.com/questions/68875228/the-conflict-is-caused-by-the-user-requested-urllib3-1-26-requests-2-23-0-depe
-urllib3==1.26.16
+urllib3==1.26.18
 
