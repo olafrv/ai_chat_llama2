@@ -9,7 +9,7 @@ peft @ git+https://github.com/huggingface/peft.git@ec267c644a9a9f05a7340a7cb23ed
 transformers @ git+https://github.com/huggingface/transformers.git@a6e6b1c622d8d08e2510a82cb6266d7b654f1cbf
 trl @ git+https://github.com/lvwerra/trl@17f22c1c205a207b47cd5b913dd06c75e50b01e0
 
-gradio==4.19.2
+gradio==4.37.1
 
 # llama-cpp-python==0.1.77, installed 'make install' in the root folder
 # https://github.com/oobabooga/text-generation-webui/issues/1534
