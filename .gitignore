@@ -7,11 +7,9 @@ offload
 # python
 venv
 __pycache__
-build
-.pytest_cache
-.coverage
-profile
 # vim
 *.swp
 # logs
 logs
+# cuda pkgs
+cuda*.deb
