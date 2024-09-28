@@ -50,28 +50,13 @@ make run MODEL_INDEX=2 # gptq
 
 ## Model Training (Draft)
 
-> **TODO:** Training passed but prompt require testing.
+> **TODO:** Training requires RAM/GRAM also datasets are tricky.
 
 Train the base LLAMA v2 original model with custom data set:
 
 ```bash
-make train-original  # meta-llama/Llama-2-7b-chat-hf
-```
-
-I expect that in a couple of months we can use AutoTrain:
-```bash
-# Llama2 is not supported by AutoTrain (Aug/2023)
-# autotrain llm --help
-# autotrain setup --update-torch  # Only if using Google Collab
-# autotrain setup
-# HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 autotrain llm --train \
-#			--data_path datasets/olafrv/fmt \
-#			--model meta-llama/Llama-2-7b-chat-hf \
-#			--text_column text --learning_rate 2e-4 --num_train_epochs 3 \
-#			--train_batch_size 12 --block_size 1024 --use_peft \
-#			--project_name olafrv/Llama-2-7b-chat-hf-trained \
-#			--use_int4 --trainer sft > logs/training.log &
-# tail -f logs/training.log
+make train-*
+make autotrain-*
 ```
 
 ## WSL v2 increasing RAM and Swap
