@@ -5,6 +5,30 @@ on your local PC (some without GPU but a bit slow if not enough RAM).
 
 <a href="ai_chat_llama2.png"><img src="ai_chat_llama2.png"></a> 
 
+```bash
+(...)
+MODEL_DEVICE: cuda:0
+Model loaded.
+Running on local URL:  http://127.0.0.1:7860
+
+To create a public link, set `share=True` in `launch()`.
+PROMPTS_RAW: [{'author': 'sysdef', 'text': 'This is my default system prompt.'}, {'author': 'user', 'text': 'Show me emojies?'}, {'author': 'sys', 'text': ''}]
+LAST_PROMPT: ---<s><<SYS>>This is my default system prompt.<</SYS>></s><s>[INST] Show me emojies? [/INST]---
+/home/ubuntu/code/github/ai_chat_llama2/venv/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:601: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/home/ubuntu/code/github/ai_chat_llama2/venv/lib/python3.10/site-packages/transformers/generation/configuration_utils.py:606: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+PROMPTS_RAW: [{'author': 'sysdef', 'text': 'This is my default system prompt.'}, {'author': 'user', 'text': 'Show me emojies?'}, {'author': 'sys', 'text': ' Of course! Here are some emojis you can use:\n\n😊👍💬👀💕😍'}, {'author': 'user', 'text': 'Nice, what day is today?'}, {'author': 'sys', 'text': ''}]
+LAST_PROMPT: ---<s><<SYS>>This is my default system prompt.<</SYS>></s><s>[INST] Show me emojies? [/INST] Of course! Here are some emojis you can use:
+
+😊👍💬👀💕😍</s><s>[INST] Nice, what day is today? [/INST]---
+PROMPTS_RAW: [{'author': 'sysdef', 'text': 'This is my default system prompt.'}, {'author': 'user', 'text': 'Show me emojies?'}, {'author': 'sys', 'text': ' Of course! Here are some emojis you can use:\n\n😊👍💬👀💕😍'}, {'author': 'user', 'text': 'Nice, what day is today?'}, {'author': 'sys', 'text': ' Today is March 28th! 🌞🌻🎉'}, {'author': 'user', 'text': 'White a simple hello world in python 3?'}, {'author': 'sys', 'text': ''}]
+LAST_PROMPT: ---<s><<SYS>>This is my default system prompt.<</SYS>></s><s>[INST] Show me emojies? [/INST] Of course! Here are some emojis you can use:
+
+😊👍💬👀💕😍</s><s>[INST] Nice, what day is today? [/INST] Today is March 28th! 🌞🌻🎉</s><s>[INST] White a simple hello world in python 3? [/INST]---
+```
+
 ## ChatBot Usage
 
 > The best model is the GPTQ [Quantized](https://huggingface.co/docs/optimum/concept_guides/quantization) but requires GPU, see [llama_models.yaml](llama_models.yaml).
@@ -88,13 +112,11 @@ My hardware was an ASUS ROG Strix G713RW laptop with:
 The complications are:
 
 * Host OS Windows 11 Pro 64 bits (AMD):
-  * Windows Virtulization Platform + WSL features enabled.
+  * Windows Virtulization Platform + WSL v2 features enabled.
   * Device Security -> Core Isolation -> Memory Integraty -> Off.
-  * NVIDIA Driver Version 536.67 supports Direct 3D 12.1.
+  * NVIDIA Driver Version 560.94 supports Direct 3D 12.1.
 * Guest Operating System Ubuntu 22.04 x86-64 (not AMD-64):
-  * CUDA Driver Version = 12.2 (Provided by default by Windows).
-  * CUDA Runtime Version = 11.8 (required for pip3 wheels builds).
-  * As of Jul/2023 PyTorch do not support CUDA Driver 12.2.
+  * CUDA Driver Version = 12.6 (Installed on Linux from NVIDIA site).
 
 Before running `make install` of AI Chat Llama v2, and only 
 if your are going to use GPU power, then this has to be
@@ -110,26 +132,26 @@ nvidia-smi
 
 Output should be like this (python3.10 is the running the Chatbot):
 ```bash
-Sat Aug  5 19:36:05 2023       
-+---------------------------------------------------------------------------------------+
-| NVIDIA-SMI 535.86.01              Driver Version: 536.67       CUDA Version: 12.2     |
-|-----------------------------------------+----------------------+----------------------+
-| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
-| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
-|                                         |                      |               MIG M. |
-|=========================================+======================+======================|
-|   0  NVIDIA GeForce RTX 3070 ...    On  | 00000000:01:00.0  On |                  N/A |
-| N/A   56C    P0              31W / 125W |   7058MiB /  8192MiB |      5%      Default |
-|                                         |                      |                  N/A |
-+-----------------------------------------+----------------------+----------------------+
+Fri Sep 27 23:44:00 2024       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.02              Driver Version: 560.94         CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3070 ...    On  |   00000000:01:00.0  On |                  N/A |
+| N/A   57C    P8             16W /  130W |    6053MiB /   8192MiB |      3%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
                                                                                          
-+---------------------------------------------------------------------------------------+
-| Processes:                                                                            |
-|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
-|        ID   ID                                                             Usage      |
-|=======================================================================================|
-|    0   N/A  N/A     92904      C   /python3.10                               N/A      |
-+---------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A     75869      C   /python3.10                                 N/A      |
++-----------------------------------------------------------------------------------------+
 ```
 
 (Optional) You can play a bit with the NVIDIA Container Toolkit (If you have docker):
@@ -137,50 +159,34 @@ Sat Aug  5 19:36:05 2023
 sudo apt-get install -y nvidia-docker2
 sudo docker run --gpus all nvcr.io/nvidia/k8s/cuda-sample:nbody nbody -gpu -benchmark
 ```
+Output should be like this:
+```bash
+(...)
+GPU Device 0: "Ampere" with compute capability 8.6
+> Compute 8.6 CUDA device: [NVIDIA GeForce RTX 3070 Ti Laptop GPU]
+47104 bodies, total time for 10 iterations: 48.482 ms
+= 457.649 billion interactions per second
+= 9152.976 single-precision GFLOP/s at 20 flops per interaction
+```
 
 ### Installation of NVIDIA CUDA Driver Libraries (Source Code)
 
 This is needed so Python (pip) can compile the necesary ML packages for your CUDA Architecture:
 
 ```bash
-# https://developer.nvidia.com/cuda-downloads (Linux > deb(network))
-wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
-sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
-```
-
-```bash
-# CUDA 12 - Not supported by PyTorch (Aug/2023) so breaks AutoGPTQ CUDA extensions compilation.
-# https://developer.download.nvidia.com/compute/cuda/12.2.1/docs/sidebar/md5sum.txt
-# wget https://developer.download.nvidia.com/compute/cuda/12.2.1/local_installers/cuda-repo-wsl-ubuntu-12-2-local_12.2.1-1_amd64.deb
-# sudo dpkg -i cuda-repo-wsl-ubuntu-12-2-local_12.2.1-1_amd64.deb
-# sudo cp /var/cuda-repo-wsl-ubuntu-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/
-# sudo apt-get update
-# sudo apt-cache policy cuda
-# sudo apt-get -y install cuda=12.2.1-1
-```
-
-```bash
+###
+# Downloads/Documentation:
+# https://developer.nvidia.com/cuda-downloads (Linux > Installer Type > deb(network))
+# https://developer.nvidia.com/cuda-toolkit-archive (For older version, incl. docs.)
+# Tested:
+# CUDA 12.6 - 
+# CUDA 12.1 - Not supported by PyTorch (Aug/2023) breaks AutoGPTQ CUDA ext. compilation.
 # CUDA 11.8 - Compiles with PyTorch / AutoGPTQ and my works with my RTX 3070.
-# https://developer.nvidia.com/cuda-11-8-0-download-archive
-https://developer.download.nvidia.com/compute/cuda/11.8.0/docs/sidebar/md5sum.txt
-wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
-sudo dpkg -i cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
-sudo cp /var/cuda-repo-wsl-ubuntu-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
+###
+wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt-get update
-sudo apt-cache policy cuda
-sudo apt-get -y install cuda=11.8.0-1
-```
-
-```bash
-# CUDA 11.7 - Compiles with PyTorch / AutoGPTQ but not recognizes my RTX 3070.
-# https://developer.nvidia.com/cuda-11-7-1-download-archive
-# https://developer.download.nvidia.com/compute/cuda/11.7.1/docs/sidebar/md5sum.txt
-# wget https://developer.download.nvidia.com/compute/cuda/11.7.1/local_installers/cuda-repo-wsl-ubuntu-11-7-local_11.7.1-1_amd64.deb
-# sudo dpkg -i cuda-repo-wsl-ubuntu-11-7-local_11.7.1-1_amd64.deb
-# sudo cp /var/cuda-repo-wsl-ubuntu-11-7-local/cuda-*-keyring.gpg /usr/share/keyrings/
-# sudo apt-get update
-# sudo apt-cache policy cuda
-# sudo apt-get -y install cuda=11.7.1-1
+sudo apt-get -y install cuda-toolkit-12-6
 ```
 
 ```bash
@@ -189,9 +195,9 @@ git clone https://github.com/nvidia/cuda-samples
 cd cuda-samples/Samples/1_Utilities/deviceQuery
 make  # It must compile for your GPU natively, no GCC flags
 ./deviceQuery
-
+(...)
 Device 0: "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
-  CUDA Driver Version / Runtime Version          12.2 / 11.8
+  CUDA Driver Version / Runtime Version          12.6 / 12.6
   CUDA Capability Major/Minor version number:    8.6
   Total amount of global memory:                 8192 MBytes (8589410304 bytes)
   (046) Multiprocessors, (128) CUDA Cores/MP:    5888 CUDA Cores
@@ -232,8 +238,7 @@ FInally, you can `make install` the AI Chat Llama v2.
 
 * https://developer.nvidia.com/cuda/wsl
 * https://developer.nvidia.com/cuda-downloads
-* https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
-* https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
-* https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0
-* https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform
 * https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+* https://documentation.ubuntu.com/wsl/en/latest/tutorials/gpu-cuda/
+* https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
+* https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute

@@ -1,23 +1,19 @@
-# See freeze-*.txt for the more packages and exact versions of the dependencies
+# huggingface
+accelerate
+autotrain-advanced
+datasets
+diffusers
+huggingface-hub
+peft
+transformers
+trl
 
-accelerate @ git+https://github.com/huggingface/accelerate.git@30eff605df5db9ba20289a0c7471e4d8547a5a8f
-autotrain-advanced @ git+https://github.com/huggingface/autotrain-advanced.git@72463c479d0c236aee35cd74d08e828deb6d0f11
-datasets @ git+https://github.com/huggingface/datasets.git@ef17d9fd6c648bb41d43ba301c3de4d7b6f833d8
-diffusers @ git+https://github.com/huggingface/diffusers.git@ea1fcc28a458739771f5112767f70d281511d2a2
-huggingface-hub @ git+https://github.com/huggingface/huggingface_hub@37a5eaa826429427c58b6f96e66dde8758b49373
-peft @ git+https://github.com/huggingface/peft.git@ec267c644a9a9f05a7340a7cb23ed5a6a6090dd0
-transformers @ git+https://github.com/huggingface/transformers.git@a6e6b1c622d8d08e2510a82cb6266d7b654f1cbf
-trl @ git+https://github.com/lvwerra/trl@17f22c1c205a207b47cd5b913dd06c75e50b01e0
+# https://github.com/abetlen/llama-cpp-python 
+llama-cpp-python
 
-gradio==4.19.2
+# https://github.com/AutoGPTQ/AutoGPTQ => make install
+wheel  # required for autogpt installation from source
 
-# llama-cpp-python==0.1.77, installed 'make install' in the root folder
-# https://github.com/oobabooga/text-generation-webui/issues/1534
-
-# auto-gptq-0.3.2+cu117, installed 'make install' in the root folder
-# auto-gptq @ file:///home/ubuntu/code/ai_chat_llama2/AutoGPTQ
-
-# The version pinning is because of google-auth requirement conflict
-# https://stackoverflow.com/questions/68875228/the-conflict-is-caused-by-the-user-requested-urllib3-1-26-requests-2-23-0-depe
-urllib3==1.26.18
-
+# ui
+gradio
+urllib3

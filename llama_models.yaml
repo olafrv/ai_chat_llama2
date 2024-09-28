@@ -1,27 +1,27 @@
 # Huggingface.co models to use for the llama2 chatbot
 [
     {
-        # Poor: High mem footprint >20GB (GPU needed but still slow)
+        # 0 => Poor: High mem footprint >20GB (GPU needed but still slow)
         "architecture": "original",
         "name": "meta-llama/Llama-2-7b-chat-hf",
         "online" : True
     },
     {
-        # Medium/Good: Very fast and low mem footprint ~3GB (CPU/GPU)
+        # 1 => Medium/Good: Very fast and low mem footprint ~3GB (CPU/GPU)
         "architecture": "ggml",
         "name": "TheBloke/Llama-2-7B-Chat-GGML",  
         "file": "llama-2-7b-chat.ggmlv3.q4_K_M.bin",
         "online" : True
     },
     {
-        # Best: Very low mem footprint and emojies! (GPU needed)
+        # 2 => Best: Very low mem footprint and emojies! (GPU needed)
         "architecture": "gptq",
         "name": "TheBloke/Llama-2-7b-Chat-GPTQ",
         "online" : True 
     },
     {
-        # Poorest: Highest mem footprint >32 GB RAM (GPU needed)
-        # This requires you to run 'make train.orig' to generate it
+        # 4 => Poorest: Highest mem footprint >32 GB RAM (GPU needed)
+        # This requires you to run 'make train-original' to generate it
         "architecture": "tlrsft",
         "name": "olafrv/Llama-2-7b-chat-hf-trained",
         "online": False
