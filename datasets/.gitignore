@@ -1,5 +1,5 @@
 # Part of the `olaf` project.
 /**
 !/.gitignore
-!olafrv/
-!olafrv/**
+!olafrv*/
+!olafrv*/**
