@@ -80,7 +80,7 @@ wsl --shutdown
 Restart-Service LxssManager
 ```
 
-## NVIDIA GPU Driver and Utilities
+## NVIDIA GPU Drivers and Utilities
 
 ### The Hardware
 
@@ -106,6 +106,10 @@ The complications are:
 Before running `make install` of AI Chat Llama v2, and only 
 if your are going to use GPU power, then this has to be
 configured manually (I'm too lazy to *Makify* it).
+
+### NVIDIA CUDA Driver and Utilities
+
+* https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
 
 ### Pre-flight checks on the Linux Guest.
 
@@ -189,7 +193,18 @@ Device 0: "NVIDIA GeForce RTX 3070 Ti Laptop GPU"
 (...)
 ```
 
-FInally, you can `make install` the AI Chat Llama v2.
+### Install NVIDIA Container Toolkit (Docker Daemon Settings)
+
+* https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation
+
+```bash
+# Reference: https://hub.docker.com/r/ollama/ollama
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+Finally, you can `make install` the AI Chat Llama v2.
 
 ## References
 
