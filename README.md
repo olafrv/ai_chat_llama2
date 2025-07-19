@@ -38,10 +38,9 @@ LAST_PROMPT: ---<s><<SYS>>This is my default system prompt.<</SYS>></s><s>[INST]
 ```bash
 git clone https://github.com/olafrv/ai_chat_llama.git
 cd ai_chat_llama
-sudo apt install make
-# make help
-## NVIDIA GPU Driver Installation (WSL2)
-# See https://github.com/olafrv/nvidia-docker-wsl
+sudo apt install make  # make help
+# NVIDIA CUDA GPU support for Docker/WSL
+# https://github.com/olafrv/nvidia-docker-wsl
 make install  # If fails see NVIDIA section above
 # export MODEL_STORE=./models
 export HUGGINGFACE_TOKEN=***********
@@ -88,12 +87,3 @@ make autotrain-*
 ### GRadio
 * https://www.gradio.app/guides/quickstart
 * https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
-
-### NVIDIA CUDA on Windows Subsystem for Linux v2 (aka WSL2):
-
-* https://developer.nvidia.com/cuda/wsl
-* https://developer.nvidia.com/cuda-downloads
-* https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
-* https://documentation.ubuntu.com/wsl/en/latest/tutorials/gpu-cuda/
-* https://docs.nvidia.com/cuda/wsl-user-guide/index.html#getting-started-with-cuda-on-wsl
-* https://learn.microsoft.com/en-us/windows/wsl/tutorials/gpu-compute
