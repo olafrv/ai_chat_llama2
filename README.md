@@ -1,5 +1,7 @@
 # AI Chat Llama2
 
+> ⚠️⚠️⚠️ This repository is NOT under active maintenance since August 2024, see https://github.com/olafrv/shollama for a replacement. 
+
 ChatBot using [Meta AI Llama v2 LLM models](https://ai.meta.com/llama/) 
 on your local PC (some without GPU but a bit slow if not enough RAM).
 
